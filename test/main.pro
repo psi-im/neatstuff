@@ -17,18 +17,18 @@ HEADERS += \
 	anim.h
 
 # Required widgets
-SOURCES += \
-	fancylabel.cpp \
-	busywidget.cpp \
-	psitextview.cpp \
-	iconwidget.cpp \
-	iconselect.cpp
-HEADERS += \
-	fancylabel.h \
-	busywidget.h \
-	psitextview.h \
-	iconwidget.h \
-	iconselect.h
+#SOURCES += \
+#	fancylabel.cpp \
+#	busywidget.cpp \
+#	psitextview.cpp \
+#	iconwidget.cpp \
+#	iconselect.cpp
+#HEADERS += \
+#	fancylabel.h \
+#	busywidget.h \
+#	psitextview.h \
+#	iconwidget.h \
+#	iconselect.h
 
 # misc
 SOURCES += \
@@ -45,8 +45,12 @@ INTERFACES += \
 INCLUDEPATH += ../../cutestuff/util
 VPATH += ../../cutestuff/util
 
-INCLUDEPATH += ../psiwidgets
-VPATH += ../psiwidgets
+#INCLUDEPATH += ../psiwidgets
+#VPATH += ../psiwidgets
+
+CONFIG += psiwidgets
+WIDGETS_CPP = ../psiwidgets
+include($$WIDGETS_CPP/psiwidgets.pri)
 
 INCLUDEPATH += ../iconset
 VPATH += ../iconset
