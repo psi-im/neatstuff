@@ -15,14 +15,16 @@ LineEdit::LineEdit(QWidget *parent)
 	: QTextEdit(parent)
 {
 	d = new Private;
-	d->topParent = parent; // FIXME: it should point to the top level widget
+	d->topParent = topLevelWidget();
 	d->lastSize = QSize( 0, 0 );
 
 	// LineEdit's size hint is to be as small as possible
 	setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Maximum );
 
-//	setVScrollBarMode(QScrollView::AlwaysOff);
-//	setHScrollBarMode(QScrollView::AlwaysOff);
+#ifdef Q_WS_MAC
+	setVScrollBarMode(QScrollView::AlwaysOff);
+	setHScrollBarMode(QScrollView::AlwaysOff);
+#endif
 
 	setWordWrap(QTextEdit::WidgetWidth);
 
@@ -49,8 +51,6 @@ QSize LineEdit::sizeHint() const
 			h += paragraphRect( i ).height();
 		}
 	}
-//	else
-//		h += heightForWidth( s.width() );
 
 	if ( horizontalScrollBar()->isVisible() )
 		h += horizontalScrollBar()->height();
