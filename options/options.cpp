@@ -148,6 +148,44 @@ static bool subTagBool(const QDomElement &e, const QString &name)
 // Options
 //----------------------------------------------------------------------------
 
+/*!
+	\class Options
+	\brief Generic class for handling Options
+
+	This class allows you to assign symbolic names to your options and it
+	supports import/export to/from XML. All options are stored as QVariant values.
+
+	<i>How to properly name properties:</i>
+	-# ALL names should begin from leading slash. Examples:
+		- \c "/lookfeel/style"
+		- \c "/lookwindows_version"
+	-# Valid symbols to use in names: [a-z], [A-Z], [0-9], '_', '-'.
+	   In general, all letters, that can be used as XML tag names, can be used freely.
+	-# It is possible to combine multiple properties in groups, but there MUST NOT be property
+	   with the name of the group. Examples: \n
+	   \b VALID:
+	   \verbatim
+ "/lookfeel/style"    = "WindowsXP"
+ "/lookfeel/numFonts" = "4"
+ "/lookfeel/blah"     = "blah"
+	   \endverbatim
+	   \b INVALID:
+	   \verbatim
+ "/lookfeel/style"    = "WindowsXP"
+ "/lookfeel/numFonts" = "4"
+ "/lookfeel"          = "something" <-- This is WRONG
+	   \endverbatim
+
+	<i>Example of imaginary property tree:</i>
+	- \c "/test" = \c "test"
+	- \c "/lookfeel/style" = \c "WindowsXP"
+	- \c "/lookfeel/numFonts" = \c "64"
+	- \c "/lookfeel/nested/something" = \c "some_value"
+	- \c "/lookfeel/nested/something_different" = \c "some_other_value"
+	- \c "/lookfeel/blah" = \c "blah-blah-blah"
+*/
+
+//! \if _hide_doc_
 class Options::Private
 {
 public:
@@ -163,23 +201,32 @@ public:
 	typedef QMap<QString, QVariant> PropMap;
 	PropMap props;
 };
+//! \endif
 
+//!
+//! Constructs object.
 Options::Options()
 {
 	d = new Private;
 }
 
+//!
+//! Destroys object and frees allocated resources.
 Options::~Options()
 {
 	delete d;
 }
 
+//!
+//! Copies all properties from \a o.
 Options &Options::operator=(const Options &o)
 {
 	d->props = o.d->props;
 	return *this;
 }
 
+//!
+//! Returns property if \a key was found, or empty QVariant if not.
 QVariant Options::property(const QString &key) const
 {
 	Private::PropMap::Iterator it = d->props.find(key);
@@ -188,11 +235,15 @@ QVariant Options::property(const QString &key) const
 	return QVariant();
 }
 
+//!
+//! Sets the property with the key \a key to value \a val.
 void Options::setProperty(const QString &key, const QVariant &val)
 {
 	d->props[key] = val;
 }
 
+//!
+//! Returns \c true if property with the key \a key exists, or false otherwise.
 bool Options::exists(const QString &key)
 {
 	Private::PropMap::Iterator it = d->props.find(key);
@@ -513,6 +564,28 @@ void Options::Private::saveProps(QDomDocument *doc, QDomElement &e, QStringList 
 	}
 }
 
+/*!
+	Creates \c QDomElement from \c QDomDocument \a doc with all properties inside it.
+	Use it to save Options to file, send it over network, etc.
+
+	\code
+ Options o;
+
+ // ...
+
+ QFile file ( "options.xml" );
+ file.open ( IO_WriteOnly );
+ QTextStream out ( &file );
+ out.setEncoding ( QTextStream::UnicodeUTF8 );
+
+ QDomDocument doc;
+ doc.appendChild ( o.toXml ( &doc ) );
+
+ out << doc.toString(4);
+	\endcode
+
+	\sa fromXml()
+*/
 QDomElement Options::toXml(QDomDocument *doc) const
 {
 	QDomElement o = doc->createElement("options");
@@ -811,6 +884,21 @@ void Options::Private::loadProps(const QDomElement &q, const QString &parent)
 	}
 }
 
+/*!
+	Reads properties from \c QDomElement \a q. Use it to restore saved options from file.
+
+	\code
+ Options o;
+
+ QFile file ( "options.xml" );
+ file.open ( IO_ReadOnly );
+ QDomDocument doc;
+ doc.setContent( &file, false );
+ o.fromXml( doc.documentElement() );
+	\endcode
+
+	\sa toXml()
+*/
 bool Options::fromXml(const QDomElement &q)
 {
 	if ( q.tagName() != "options" )
@@ -822,6 +910,8 @@ bool Options::fromXml(const QDomElement &q)
 	return true;
 }
 
+//!
+//! Returns \c true if there at least one property and \c false otherwise.
 bool Options::isEmpty() const
 {
 	return d->props.isEmpty();

@@ -37,6 +37,7 @@ public:
 	
 	const QPixmap &framePixmap() const;
 	const QImage &frameImage() const;
+	const Impix &frameImpix() const;
 	bool isNull() const;
 	
 	int framenumber() const;

@@ -22,6 +22,7 @@
 
 #include <qasyncimageio.h>
 
+//! if _hide_doc_
 class PsiPNGFormat : public QImageFormat {
 private:
 	int w, h;
@@ -29,16 +30,16 @@ private:
 	int numFrames;
 	int frame, frameW;
 	int frameBytes;
-	
+
 	int maxLen, curLen;
-	
+
 	static const int framePeriod = 100;
-	
+
 public:
 	PsiPNGFormat()
 	{
 	}
-	
+
 	~PsiPNGFormat()
 	{
 	}
@@ -47,21 +48,21 @@ public:
 	{
 		if ( !length )
 			return 0;
-		
+
 		if ( image.isNull() ) { // cache our image for speedup
 			if ( image.loadFromData( buffer, length ) ) {
 				w = image.width();
 				h = image.height();
-				
+
 				numFrames = w / h;
 				frameBytes = length / numFrames;
 				frameW = w / numFrames;
 				frame = 0;
-				
+
 				consumer->setLooping( numFrames > 1 ? 0 : 1 );
 				consumer->setFramePeriod(framePeriod);
 				consumer->setSize(frameW, h);
-				
+
 				maxLen = length;
 				curLen = 0;
 			}
@@ -71,11 +72,11 @@ public:
 				return 0;
 			}
 		}
-				
+
 		if ( frame < numFrames ) {
 			img = image.copy(frame++ * frameW, 0, frameW, h);
 			consumer->frameDone(QPoint(0, 0), QRect(0, 0, frameW, h));
-			
+
 			if ( frame >= numFrames ) {
 				consumer->end();
 				frameBytes = maxLen - curLen;
@@ -83,19 +84,20 @@ public:
 			else
 				consumer->setFramePeriod(framePeriod);
 		}
-		
+
 		curLen += frameBytes;
 		return frameBytes;
 	}
 };
+//! \endif
 
 class PsiPNGFormatType : public QImageFormatType
 {
 	QImageFormat *decoderFor(const uchar *buffer, int length)
 	{
-		if (length < 8) 
+		if (length < 8)
 			return 0;
-			
+
 		if (buffer[0]==137
 		 && buffer[1]=='P'
 		 && buffer[2]=='N'
@@ -125,6 +127,13 @@ void cleanupPsiPngIO()
 	}
 }
 
+/*!
+	Call this function to register PsiPNG animation format.
+
+	In this format, all animation frames are stored in one .png file.
+	<tt>Frame width = Frame height</tt>, and
+	<tt>total .png width = tatal .png height * numFrames</tt>.
+*/
 void initPsiPngIO()
 {
 	static bool done = FALSE;

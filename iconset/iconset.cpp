@@ -41,6 +41,30 @@
 //----------------------------------------------------------------------------
 // Impix
 //----------------------------------------------------------------------------
+
+//! \class Impix iconset.h
+//! \brief Combines a QPixmap and QImage into one class
+//!
+//!  Normally, it is common to use QPixmap for all application graphics.
+//!  However, sometimes it is necessary to access pixel data, which means
+//!  a time-costly conversion to QImage.  Impix does this conversion on
+//!  construction, and keeps a copy of both a QPixmap and QImage for fast
+//!  access to each.  What you gain in speed you pay in memory, as an Impix
+//!  should occupy twice the space.
+//!
+//!  An Impix can be conveniently created from either a QImage or QPixmap
+//!  source, and can be casted back to either type.
+//!
+//!  You may also call unload() to free the image data.
+//!
+//!  \code
+//!  Impix i = QImage("icon.png");
+//!  QLabel *iconLabel;
+//!  iconLabel->setPixmap(i.pixmap());
+//!  QImage image = i.image();
+//!  \endcode
+
+//! \if _hide_doc_
 class Impix::Private
 {
 public:
@@ -66,6 +90,7 @@ public:
 	QPixmap *pixmap;
 	QImage *image;
 };
+//! \endif
 
 //! \brief Construct a null Impix
 //!
@@ -95,6 +120,7 @@ Impix::Impix(const QImage &from)
 	*this = from;
 }
 
+//!
 //! \brief Copy constructor
 Impix::Impix(const Impix &from)
 {
@@ -102,7 +128,8 @@ Impix::Impix(const Impix &from)
 	*this = from;
 }
 
-//! Sets the Impix to \param from
+//!
+//! Sets the Impix to \a from
 Impix & Impix::operator=(const Impix &from)
 {
 	d->unload();
@@ -113,6 +140,7 @@ Impix & Impix::operator=(const Impix &from)
 	return *this;
 }
 
+//!
 //! Unloads image data, making it null.
 void Impix::unload()
 {
@@ -122,6 +150,7 @@ void Impix::unload()
 	d->unload();
 }
 
+//!
 //! Destroys the image.
 Impix::~Impix()
 {
@@ -176,22 +205,36 @@ bool Impix::loadFromData(const QByteArray &ba)
 // Icon
 //----------------------------------------------------------------------------
 
+/*!
+	\class Icon
+	\brief Can contain Anim and stuff
+
+	This class can be used for storing application icons as well as emoticons
+	(it has special functions in order to do that).
+
+	Icons can contain animation, associated sound files, its own names.
+
+	For implementing emoticon functionality, Icon can have associated text
+	values and QRegExp for easy searching.
+*/
+
+//! \if _hide_doc_
 class Icon::Private : public QShared
 {
 public:
-	Private() 
-	{ 
+	Private()
+	{
 		anim = 0;
 		activatedCount = 0;
 		text.setAutoDelete(true);
 	}
-	
+
 	~Private()
 	{
-		unload();
+		unloadAnim();
 	}
-	
-	void unload()
+
+	void unloadAnim()
 	{
 		if ( anim )
 			delete anim;
@@ -202,25 +245,33 @@ public:
 	QRegExp regExp;
 	QDict<QString> text;
 	QString sound;
-	
+
 	Impix impix;
 	Anim *anim;
-	
+
 	int activatedCount;
 };
+//! \endif
 
+//!
+//! Constructs empty Icon.
 Icon::Icon()
 : QObject(0, 0)
 {
 	d = new Private;
 }
 
+//!
+//! Destroys Icon.
 Icon::~Icon()
 {
 	if ( d->deref() )
 		delete d;
 }
 
+//!
+//! Creates new icon, that is a copy of \a from. Note, that if one icon will be changed,
+//! other will be changed as well. (that's because image data is shared)
 Icon::Icon(const Icon &from)
 : QObject(0, 0)
 {
@@ -229,16 +280,19 @@ Icon::Icon(const Icon &from)
 	//qWarning("Icon: name = %s; regExp = %s", d->name.latin1(), d->regExp.pattern().latin1());
 }
 
+//!
+//! Creates new icon, that is a copy of \a from. Note, that if one icon will be changed,
+//! other will be changed as well. (that's because image data is shared)
 Icon & Icon::operator= (const Icon &from)
 {
 	if ( d->deref() )
 		delete d;
-		
+
 	d = from.d;
 	d->ref();
-		
+
 	/*d = new Private;
-	
+
 	d->name = from.d->name;
 	d->regExp = from.d->regExp;
 	d->text = from.d->text;
@@ -247,15 +301,19 @@ Icon & Icon::operator= (const Icon &from)
 	if ( from.d->anim )
 		d->anim = new Anim( *from.d->anim );
 	d->activatedCount = 0;*/
-	
+
 	return *this;
 }
 
+//!
+//! Returns \c true when icon contains animation.
 bool Icon::isAnimated() const
 {
 	return d->anim != 0;
 }
 
+//!
+//! Returns QPixmap of current frame.
 const QPixmap &Icon::pixmap() const
 {
 	if ( d->anim )
@@ -263,6 +321,8 @@ const QPixmap &Icon::pixmap() const
 	return d->impix.pixmap();
 }
 
+//!
+//! Returns QImage of current frame.
 const QImage &Icon::image() const
 {
 	if ( d->anim )
@@ -270,68 +330,113 @@ const QImage &Icon::image() const
 	return d->impix.image();
 }
 
+//!
+//! Returns Impix of current frame.
+//! \sa setImpix()
 const Impix &Icon::impix() const
 {
+	if ( d->anim )
+		return d->anim->frameImpix();
 	return d->impix;
 }
 
+//!
+//! Sets the Icon impix to \a impix. Also unloads animation, if it was present.
+//! \sa impix()
 void Icon::setImpix(const Impix &impix)
 {
+	unloadAnim();
 	d->impix = impix;
 	emit pixmapChanged( pixmap() );
 }
 
+//!
+//! Returns pointer to Anim object, or \a 0 if Icon doesn't contain an animation.
 const Anim *Icon::anim() const
 {
 	return d->anim;
 }
 
+//!
+//! Sets the animation for icon to \a anim.
+//! \sa anim()
 void Icon::setAnim(const Anim &anim)
 {
 	d->anim = new Anim(anim);
 	emit pixmapChanged( pixmap() );
 }
 
+//!
+//! Returns name of the Icon.
+//! \sa setName()
 const QString &Icon::name() const
 {
 	return d->name;
 }
 
+//!
+//! Sets the Icon name to \a name
+//! \sa name()
 void Icon::setName(const QString &name)
 {
 	d->name = name;
 }
 
+//!
+//! Returns Icon's QRegExp. It is used to store information for emoticons.
+//! \sa setRegExp()
 const QRegExp &Icon::regExp() const
 {
 	return d->regExp;
 }
 
+//!
+//! Sets the Icon QRegExp to \a regExp.
+//! \sa regExp()
+//! \sa text()
 void Icon::setRegExp(const QRegExp &regExp)
 {
 	d->regExp = regExp;
 }
 
+//!
+//! Returns Icon's text. It is used to store information for emoticons.
+//! \sa setText()
+//! \sa regExp()
 const QDict<QString> &Icon::text() const
 {
 	return d->text;
 }
 
-void Icon::setText(const QDict<QString> &text)
+//!
+//! Sets the Icon text to \a t.
+//! \sa text()
+void Icon::setText(const QDict<QString> &t)
 {
 	d->text = text;
 }
 
+//!
+//! Returns file name of associated sound.
+//! \sa setSound()
+//! \sa activated()
 const QString &Icon::sound() const
 {
 	return d->sound;
 }
 
+//!
+//! Sets the sound file name to be associated with this Icon.
+//! \sa sound()
+//! \sa activated()
 void Icon::setSound(const QString &sound)
 {
 	d->sound = sound;
 }
 
+//!
+//! Initializes Icon's Impix (or Anim, if \a isAnim equals \c true).
+//! Iconset::load uses this function.
 bool Icon::loadFromData(const QByteArray &ba, bool isAnim)
 {
 	bool ret = false;
@@ -346,38 +451,47 @@ bool Icon::loadFromData(const QByteArray &ba, bool isAnim)
 			ret = true;
 		}
 	}
-	
+
 	if ( !ret && d->impix.loadFromData(ba) )
 		ret = true;
-	
+
 	if ( ret )
 		emit pixmapChanged( pixmap() );
-	
+
 	return ret;
 }
 
+//!
+//! You need to call this function, when Icon is \e triggered, i.e. it is shown on screen
+//! and it must start animation (if it has not animation, it will not start animation, of course).
+//! If \a playSound equals \c true, Icon will play associated sound file.
+//! \sa stop()
 void Icon::activated(bool playSound)
 {
 	d->activatedCount++;
 	//qWarning("%-25s Icon::activated count = %d", name().latin1(), d->activatedCount);
-	
+
 	if ( playSound && !d->sound.isNull() ) {
 		// TODO: insert sound playing code
 	}
-	
+
 	if ( d->anim ) {
 		d->anim->unpause();
-			
+
 		d->anim->disconnectUpdate (this, SLOT(animUpdate())); // ensure, that we're connected to signal exactly one time
 		d->anim->connectUpdate (this, SLOT(animUpdate()));
 	}
 }
 
+//!
+//! You need to call this function when Icon is no more shown on screen. It would save
+//! processor time, if Icon has animation.
+//! \sa activated()
 void Icon::stop()
 {
 	d->activatedCount--;
 	//qWarning("%-25s Icon::stop count = %d", name().latin1(), d->activatedCount);
-	
+
 	if ( d->activatedCount <= 0 ) {
 		d->activatedCount = 0;
 		if ( d->anim ) {
@@ -387,6 +501,7 @@ void Icon::stop()
 	}
 }
 
+//! \internal
 void Icon::animUpdate()
 {
 	emit pixmapChanged( pixmap() );
@@ -396,6 +511,17 @@ void Icon::animUpdate()
 // IconsetFactory
 //----------------------------------------------------------------------------
 
+/*!
+	\class IconsetFactory
+	\brief Class for easy application-wide Icon searching
+
+	You can add several Iconsets to IconsetFactory to use multiple Icons
+	application-wide with ease.
+
+	You can reference Icons by their name from any place from your application.
+*/
+
+//! \if _hide_doc_
 class IconsetFactoryPrivate
 {
 private:
@@ -407,9 +533,10 @@ public:
 
 public:
 	static const Icon *icon(const QString &name);
-	
+
 	friend class IconsetFactory;
 };
+//! \endif
 
 QPtrVector<Iconset> *IconsetFactoryPrivate::iconsets = 0;
 
@@ -418,7 +545,7 @@ void IconsetFactoryPrivate::registerIconset(const Iconset *i)
 	if ( !iconsets || iconsets->find(i) < 0 ) {
 		if ( !iconsets )
 			iconsets = new QPtrVector<Iconset>;
-	
+
 		iconsets->resize ( iconsets->count() + 1 );
 		iconsets->insert ( iconsets->count(), i );
 	}
@@ -428,7 +555,7 @@ void IconsetFactoryPrivate::unregisterIconset(const Iconset *i)
 {
 	if ( iconsets && iconsets->find(i) >= 0 ) {
 		iconsets->remove ( iconsets->find(i) );
-		
+
 		if ( !iconsets->count() ) {
 			delete iconsets;
 			iconsets = 0;
@@ -440,7 +567,7 @@ const Icon *IconsetFactoryPrivate::icon(const QString &name)
 {
 	if ( !iconsets )
 		return 0;
-	
+
 	const Icon *i = 0;
 	for (uint j = 0; j < iconsets->count(); j++) {
 		i = iconsets->at(j)->icon(name);
@@ -450,6 +577,9 @@ const Icon *IconsetFactoryPrivate::icon(const QString &name)
 	return i;
 }
 
+//!
+//! Returns pointer to Icon with name \a name, or \a 0 if Icon with that name wasn't
+//! found in IconsetFactory.
 const Icon *IconsetFactory::iconPtr(const QString &name)
 {
 	const Icon *i = IconsetFactoryPrivate::icon(name);
@@ -459,6 +589,9 @@ const Icon *IconsetFactory::iconPtr(const QString &name)
 	return i;
 }
 
+//!
+//! Returns Icon with name \a name, or empty Icon if Icon with that name wasn't
+//! found in IconsetFactory.
 const Icon &IconsetFactory::icon(const QString &name)
 {
 	const Icon *i = iconPtr(name);
@@ -467,10 +600,12 @@ const Icon &IconsetFactory::icon(const QString &name)
 	return Icon();
 }
 
+//!
+//! Returns list of all Icon names that are in IconsetFactory.
 const QStringList IconsetFactory::icons()
 {
 	QStringList list;
-	
+
 	QPtrVector<Iconset> *iconsets = IconsetFactoryPrivate::iconsets;
 	uint count = 0;
 	if ( iconsets )
@@ -480,26 +615,39 @@ const QStringList IconsetFactory::icons()
 		for ( ; it.current(); ++it)
 			list << (*it)->name();
 	}
-	
+
 	return list;
-	
+
 }
 
 //----------------------------------------------------------------------------
 // Iconset
 //----------------------------------------------------------------------------
 
+/*!
+	\class Iconset
+	\brief Class for easy Icon grouping
+
+	This class supports loading Icons from .zip arhives. It also provides additional
+	information: name(), authors(), version(), description() and creation() date.
+
+	This class is very handy to manage emoticon sets as well as usual application icons.
+
+	\sa IconsetFactory
+*/
+
+//! \if _hide_doc_
 class Iconset::Private : public QShared
 {
 public:
-	Private() 
+	Private()
 	{
 		name = "Unnamed";
 		version = "1.0";
 		description = "No description";
 		authors << "I. M. Anonymous";
 		creation = "XXXX-XX-XX";
-		
+
 		list.setAutoDelete(true);
 	}
 
@@ -712,20 +860,27 @@ public:
 	QDict<QString> info;
 	//Icon nullIcon;
 };
+//! \endif
 
 int Iconset::Private::icon_counter = 0;
 
+//!
+//! Creates empty Iconset.
 Iconset::Iconset()
 {
 	d = new Private;
 }
 
+//!
+//! Creates shared copy of Iconset \a from.
 Iconset::Iconset(const Iconset &from)
 {
 	d = from.d;
 	d->ref();
 }
 
+//!
+//! Destroys Iconset, and frees all allocated Icons.
 Iconset::~Iconset()
 {
 	if ( d->deref() )
@@ -734,22 +889,26 @@ Iconset::~Iconset()
 	IconsetFactoryPrivate::unregisterIconset(this);
 }
 
+//!
+//! Copies all Icons as well as additional information from Iconset \a from.
 Iconset &Iconset::operator=(const Iconset &from)
 {
 	clear();
 	QDictIterator<Icon> it( from.d->list );
 	for ( ; it.current(); ++it)
 		d->list.insert(it.currentKey(), new Icon(*it.current()));
-		
+
 	d->name = from.d->name;
 	d->version = from.d->version;
 	d->description = from.d->description;
 	d->authors = from.d->authors;
 	d->creation = from.d->creation;
-	
+
 	return *this;
 }
 
+//!
+//! Appends icons from Iconset \a from to this Iconset.
 Iconset &Iconset::operator+=(const Iconset &i)
 {
 	QDictIterator<Icon> it( i.d->list );
@@ -758,16 +917,23 @@ Iconset &Iconset::operator+=(const Iconset &i)
 	return *this;
 }
 
+//!
+//! Frees all allocated Icons.
 void Iconset::clear()
 {
 	d->list.clear();
 }
 
+//!
+//! Returns the number of Icons in Iconset.
 uint Iconset::count() const
 {
 	return d->list.count();
 }
 
+//!
+//! Loads Icons and additional information from directory \a dir. Directory can usual directory,
+//! or a .zip/.jisp archive. There must exist file named \c icondef.xml in that directory.
 bool Iconset::load(const QString &dir)
 {
 	QByteArray ba;
@@ -786,44 +952,61 @@ bool Iconset::load(const QString &dir)
 	return false;
 }
 
+//!
+//! Returns pointer to Icon, if Icon with name \a name was found in Iconset, or \a 0 otherwise.
+//! \sa setIcon()
 const Icon *Iconset::icon(const QString &name) const
 {
 	if ( d->list.isEmpty() )
 		return 0;
-	
+
 	return d->list.find(name);
 }
 
+//!
+//! Appends (or replaces, if Icon with that name already exists) Icon to Iconset.
 void Iconset::setIcon(const QString &name, const Icon &icon)
 {
 	d->list.replace (name, new Icon(icon));
 }
 
+//!
+//! Removes Icon with the name \a name from Iconset.
 void Iconset::removeIcon(const QString &name)
 {
 	d->list.remove (name);
 }
 
+//!
+//! Returns the Iconset name.
 const QString &Iconset::name() const
 {
 	return d->name;
 }
 
+//!
+//! Returns the Iconset version.
 const QString &Iconset::version() const
 {
 	return d->version;
 }
 
+//!
+//! Returns the Iconset description string.
 const QString &Iconset::description() const
 {
 	return d->description;
 }
 
+//!
+//! Returns the Iconset authors list.
 const QStringList &Iconset::authors() const
 {
 	return d->authors;
 }
 
+//!
+//! Returns the Iconset creation date.
 const QString &Iconset::creation() const
 {
 	return d->creation;
@@ -835,26 +1018,38 @@ QDictIterator<Icon> Iconset::iterator() const
 	return it;
 }
 
+//!
+//! Returns directory (.zip archive) name from which Iconset was loaded.
 const QString &Iconset::fileName() const
 {
 	return d->filename;
 }
 
+//!
+//! Sets the Iconset directory (.zip archive) name.
 void Iconset::setFileName(const QString &f)
 {
 	d->filename = f;
 }
 
+//!
+//! Returns additional Iconset information.
+//! \sa setInfo()
 const QDict<QString> Iconset::info() const
 {
 	return d->info;
 }
 
+//!
+//! Sets additional Iconset information.
+//! \sa info()
 void Iconset::setInfo(const QDict<QString> &i)
 {
 	d->info = i;
 }
 
+//!
+//! Created QMimeSourceFactory with names of icons and their images.
 QMimeSourceFactory *Iconset::createMimeSourceFactory() const
 {
 	QMimeSourceFactory *m = new QMimeSourceFactory;
@@ -862,15 +1057,19 @@ QMimeSourceFactory *Iconset::createMimeSourceFactory() const
 	QDictIterator<Icon> it( d->list );
 	for ( ; it.current(); ++it)
 		m->setImage(it.currentKey(), it.current()->image());
-	
+
 	return m;
 }
 
+//!
+//! Adds Iconset to IconsetFactory.
 void Iconset::addToFactory() const
 {
 	IconsetFactoryPrivate::registerIconset(this);
 }
 
+//!
+//! Removes Iconset from IconsetFactory.
 void Iconset::removeFromFactory() const
 {
 	IconsetFactoryPrivate::unregisterIconset(this);

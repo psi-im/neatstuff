@@ -73,7 +73,13 @@ public:
 	~Icon();
 	
 	Icon & operator= (const Icon &);
+
+	//!
+	//! see pixmap().
 	operator const QPixmap &() const { return pixmap(); }
+
+	//!
+	//! see image().
 	operator const QImage &() const { return image(); }
 	
 	bool isAnimated() const;

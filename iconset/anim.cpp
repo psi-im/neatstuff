@@ -26,6 +26,17 @@
 #include <qptrvector.h>
 #include <qtimer.h>
 
+/*!
+	\class Anim
+	\brief Class for handling animations
+
+	Anim is a class that can load animations. Generally, it looks like
+	QMovie but it loads animations in one pass and stores it in memory.
+
+	Each frame of Anim is stored as Impix.
+*/
+
+//! \if _hide_doc_
 class Anim::Private : public QObject, public QShared, private QImageConsumer
 {
 	Q_OBJECT
@@ -35,12 +46,12 @@ public:
 
 	bool empty;
 	bool paused;
-	
+
 	int speed;
 	int lasttimerinterval, frameperiod;
-	
+
 	int looping, loop;
-	
+
 	class Frame {
 	public:
 		Frame(Impix *i, int p)
@@ -59,7 +70,7 @@ public:
 	
 	QPtrVector<Frame> frames;
 	int frame;
-	
+
 public:
 	void init()
 	{
@@ -68,7 +79,7 @@ public:
 		speed = 100;
 		lasttimerinterval = -1;
 		frameperiod = 120;
-		
+
 		looping = 0; // MNG movies doesn't contain loop flag?
 		loop = 0;
 		frame = 0;
@@ -155,36 +166,36 @@ public:
 	void end()
 	{
 	}
-	
+
 	void changed(const QRect &)
 	{
 	}
-	
+
 	void frameDone()
 	{
 		frames.resize ( frames.count()+1 );
 		frames.insert ( frames.count(), new Frame(new Impix( decoder->image() ), frameperiod) );
 	}
-	
+
 	void frameDone(const QPoint &, const QRect &)
 	{
 		frameDone();
 	}
-	
+
 	void setLooping(int loop)
 	{
 		looping = loop;
 	}
-	
+
 	void setFramePeriod(int period)
 	{
 		frameperiod = period;
 	}
-	
+
 	void setSize(int, int)
 	{
 	}
-	
+
 signals:
 	void areaChanged();
 
@@ -194,7 +205,7 @@ public slots:
 		frame++;
 		if ( frame >= numFrames() ) {
 			frame = 0;
-			
+
 			loop++;
 			if ( looping && loop >= looping ) {
 				frame = numFrames() - 1;
@@ -202,87 +213,143 @@ public slots:
 				restart();
 			}
 		}
-		
+
 		emit areaChanged();
 		restartTimer();
 	}
 };
+//! \endif
 
+//!
+//! Creates animation from QByteArray \a data.
 Anim::Anim(const QByteArray &data)
 {
 	d = new Private(data);
 }
 
+//!
+//! Creates shared copy of Anim \a anim.
 Anim::Anim(const Anim &anim)
 {
 	d = anim.d;
 	d->ref();
 }
 
+//!
+//! Deletes animation.
 Anim::~Anim()
 {
-	if ( d->deref() ) 
+	if ( d->deref() )
 		delete d;
 }
 
+//!
+//! Returns QPixmap of current frame.
 const QPixmap &Anim::framePixmap() const
 {
 	return d->frames[d->frame]->impix->pixmap();
 }
 
+//!
+//! Returns QImage of current frame.
 const QImage &Anim::frameImage() const
 {
 	return d->frames[d->frame]->impix->image();
 }
 
+//!
+//! Returns Impix of current frame.
+const Impix &Anim::frameImpix() const
+{
+	return *d->frames[d->frame]->impix;
+}
+
+//!
+//! Returns total number of frames in animation.
 int Anim::numFrames() const
 {
 	return d->frames.count();
 }
 
+//!
+//! Returns the number of current animation frame.
 int Anim::framenumber() const
 {
 	return d->frame;
 }
 
+//!
+//! Returns Impix of animation frame number \a n.
 const Impix &Anim::frame(int n) const
 {
 	return *d->frames[n]->impix;
 }
 
+//!
+//! Returns \c true if numFrames() == 0 and \c false otherwise.
 bool Anim::isNull() const
 {
 	return !numFrames();
 }
 
+//!
+//! Returns \c true when animation is paused.
 bool Anim::paused() const
 {
 	return d->paused;
 }
 
+//!
+//! Continues the animation playback.
 void Anim::unpause()
 {
 	if ( !isNull() && paused() )
 		d->unpause();
 }
 
+//!
+//! Pauses the animation.
 void Anim::pause()
 {
 	if ( !isNull() && !paused() )
 		d->pause();
 }
 
+//!
+//! Starts animation from the very beginning.
 void Anim::restart()
 {
 	if ( !isNull() )
 		d->restart();
 }
 
+/*!
+	Connects internal signal with specified slot \a member of object \a receiver, which
+	is emitted when animation changes its frame.
+
+	\code
+ class MyObject : public QObject {
+ 	Q_OBJECT
+ 	// ...
+ public slots:
+ 	void animUpdated();
+	// ...
+	void foo (Anim *anim) {
+		anim->connectUpdate( this, SLOT(animUpdated()) );
+	}
+ }
+	\endcode
+
+	\sa disconnectUpdate()
+*/
 void Anim::connectUpdate(QObject *receiver, const char *member)
 {
 	QObject::connect(d, SIGNAL(areaChanged()), receiver, member);
 }
 
+//!
+//! Disconnects slot \a member, which was prevously connected with connectUpdate().
+//! \sa connectUpdate()
 void Anim::disconnectUpdate(QObject *receiver, const char *member)
 {
 	QObject::disconnect(d, SIGNAL(areaChanged()), receiver, member);
