@@ -92,6 +92,14 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 	if ( stickAt <= 0 || !stickEnabled )
 		return;
 
+	QWidget *p = (QWidget *)parent();
+	if ( p->pos() == QPoint(*x, *y) &&
+	     p->frameSize() == QSize(*width, *height) )
+		return;
+
+	bool resizing = p->frameSize() != QSize(*width, *height);
+	int oldX = *x, oldY = *y;
+
 	advancedWidgetShared->startTimer();
 
 	QWidget *w;
@@ -114,8 +122,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( w->isDesktop() )
 			rect = ((QDesktopWidget *)w)->availableGeometry((QWidget *)parent());
 		else {
-			if ( w == (QWidget *)parent() ||
-			     desktop->screenNumber((QWidget *)parent()) != desktop->screenNumber(w) )
+			if ( w == p ||
+			     desktop->screenNumber(p) != desktop->screenNumber(w) )
 				continue;
 
 			// we want for widget to stick to outer edges of another widget, so
@@ -124,8 +132,11 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		}
 
 		if ( *x <= rect.left() + stickAt &&
-		     *x >  rect.left() - stickAt )
+		     *x >  rect.left() - stickAt ) {
 			*x = rect.left();
+			if ( resizing )
+				*width = p->frameSize().width() + oldX - *x;
+		}
 
 		if ( *x + *width > rect.right() - stickAt &&
 		     *x + *width < rect.right() + stickAt )
