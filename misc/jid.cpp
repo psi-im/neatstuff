@@ -20,7 +20,7 @@
  *
  */
 
-// Test: $Id: jid.cpp,v 1.2 2004-06-24 17:32:49 mblsha Exp $
+// Test: $Id: jid.cpp,v 1.3 2004-06-24 17:35:04 mblsha Exp $
 
 #include"jid.h"
 
