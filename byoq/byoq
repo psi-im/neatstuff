@@ -3,7 +3,7 @@
 do_build()
 {
 	cd qt
-	./configure -no-exceptions -system-zlib && make
+	./configure -no-exceptions -qt-zlib && make
 	ret="$?"
 	cd ..
 	if [ "$ret" = "0" ]; then
