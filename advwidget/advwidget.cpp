@@ -2,6 +2,7 @@
 
 #include <qapplication.h>
 #include <qwidgetlist.h>
+#include <qtimer.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -9,55 +10,112 @@
 #endif
 
 //----------------------------------------------------------------------------
+// AdvancedWidgetShared
+//----------------------------------------------------------------------------
+
+class AdvancedWidgetShared : public QObject
+{
+	Q_OBJECT
+public:
+	AdvancedWidgetShared();
+	~AdvancedWidgetShared();
+
+	QWidgetList *topWidgets;
+
+private:
+	QTimer *topWidgetsTimer;
+
+public slots:
+	void startTimer();
+
+private slots:
+	void deleteTopWidgets();
+};
+
+AdvancedWidgetShared::AdvancedWidgetShared()
+	: QObject(qApp)
+{
+	topWidgets = 0;
+	topWidgetsTimer = new QTimer(this);
+	connect(topWidgetsTimer, SIGNAL(timeout()), SLOT(deleteTopWidgets()));
+}
+
+AdvancedWidgetShared::~AdvancedWidgetShared()
+{
+	deleteTopWidgets();
+}
+
+void AdvancedWidgetShared::startTimer()
+{
+	topWidgetsTimer->start(250, true);
+}
+
+void AdvancedWidgetShared::deleteTopWidgets()
+{
+	if ( topWidgets ) {
+		delete topWidgets;
+		topWidgets = 0;
+	}
+}
+
+static AdvancedWidgetShared *advancedWidgetShared = 0;
+
+//----------------------------------------------------------------------------
 // AdvancedWidget::Private
 //----------------------------------------------------------------------------
 
-class AdvancedWidget::Private
+class AdvancedWidget::Private : QObject
 {
 public:
 	Private(AdvancedWidget *parent);
-
-	AdvancedWidget *parent;
 
 	static int  stickAt;
 	static bool stickToWindows;
 	static bool stickEnabled;
 
-	void posChanging(int *x, int *y, int width, int height);
+	void posChanging(int *x, int *y, int *width, int *height);
 };
 
-int  AdvancedWidget::Private::stickAt = 5;
+int  AdvancedWidget::Private::stickAt        = 5;
 bool AdvancedWidget::Private::stickToWindows = true;
-bool AdvancedWidget::Private::stickEnabled = true;
+bool AdvancedWidget::Private::stickEnabled   = true;
 
-AdvancedWidget::Private::Private(AdvancedWidget *_parent)
+AdvancedWidget::Private::Private(AdvancedWidget *parent)
+	: QObject(parent)
 {
-	parent = _parent;
+	if ( !advancedWidgetShared )
+		advancedWidgetShared = new AdvancedWidgetShared();
 }
 
-void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
+void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *height)
 {
 	if ( stickAt <= 0 || !stickEnabled )
 		return;
 
+	advancedWidgetShared->startTimer();
+
 	QWidget *w;
 	QDesktopWidget *desktop = qApp->desktop();
+	QWidgetList *list = advancedWidgetShared->topWidgets;
 
-	QWidgetList *list;
-	if ( stickToWindows )
-		list = QApplication::topLevelWidgets();
-	else
-		list = new QWidgetList();
-	list->append( desktop );
+	if ( !list ) {
+		if ( stickToWindows )
+			list = QApplication::topLevelWidgets();
+		else
+			list = new QWidgetList();
+		list->append( desktop );
+
+		advancedWidgetShared->topWidgets = list;
+	}
+
 	QWidgetListIt it( *list );
-
 	for ( ; (w = it.current()); ++it ) {
 		QRect rect;
 		if ( w->isDesktop() )
-			rect = ((QDesktopWidget *)w)->availableGeometry(parent);
+			rect = ((QDesktopWidget *)w)->availableGeometry((QWidget *)parent());
 		else {
-			if ( w == parent ||
-			     desktop->screenNumber(parent) != desktop->screenNumber(w) )
+			if ( w == (QWidget *)parent() ||
+			     desktop->screenNumber((QWidget *)parent()) != desktop->screenNumber(w) )
 				continue;
 
 			// we want for widget to stick to outer edges of another widget, so
@@ -69,20 +127,18 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 		     *x >  rect.left() - stickAt )
 			*x = rect.left();
 
-		if ( *x + width > rect.right() - stickAt &&
-		     *x + width < rect.right() + stickAt )
-			*x = rect.right() - width + 1;
+		if ( *x + *width > rect.right() - stickAt &&
+		     *x + *width < rect.right() + stickAt )
+			*x = rect.right() - *width + 1;
 
 		if ( *y <= rect.top() + stickAt &&
 		     *y >  rect.top() - stickAt )
 			*y = rect.top();
 
-		if ( *y + height > rect.bottom() - stickAt &&
-		     *y + height < rect.bottom() + stickAt )
-			*y = rect.bottom() - height + 1;
+		if ( *y + *height > rect.bottom() - stickAt &&
+		     *y + *height < rect.bottom() + stickAt )
+			*y = rect.bottom() - *height + 1;
 	}
-
-	delete list;
 }
 
 //----------------------------------------------------------------------------
@@ -106,7 +162,7 @@ bool AdvancedWidget::winEvent(MSG *msg)
 	if ( msg->message == WM_WINDOWPOSCHANGING ) {
 		WINDOWPOS *wpos = (WINDOWPOS *)msg->lParam;
 
-		d->posChanging(&wpos->x, &wpos->y, wpos->cx, wpos->cy);
+		d->posChanging(&wpos->x, &wpos->y, &wpos->cx, &wpos->cy);
 
 		return true;
 	}
@@ -144,3 +200,5 @@ void AdvancedWidget::setStickEnabled(bool val)
 {
 	Private::stickEnabled = val;
 }
+
+#include "advwidget.moc"
