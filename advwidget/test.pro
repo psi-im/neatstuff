@@ -7,3 +7,6 @@ SOURCES += \
 
 HEADERS += \
 	advwidget.h
+
+FORMS += \
+	ui_test.ui
