@@ -1,0 +1,52 @@
+#!/bin/sh
+
+do_build()
+{
+	cd qt
+	./configure -no-exceptions -system-zlib && make
+	ret="$?"
+	cd ..
+	if [ "$ret" = "0" ]; then
+		echo "Qt build successful."
+		exit 0
+	else
+		echo "Error building Qt."
+		exit 1
+	fi
+}
+
+do_clean()
+{
+	cd qt
+	if [ -e "Makefile" ]; then
+		make clean
+		rm lib/libQtCore_debug.so
+		rm lib/libQtXml_debug.so
+		rm lib/libQtNetwork_debug.so
+	fi
+	cd ..
+}
+
+case "$1" in
+	build)
+		if [ -x "qt/lib/libQtCore_debug.so" ] &&
+			[ -x "qt/lib/libQtXml_debug.so" ] &&
+			[ -x "qt/lib/libQtNetwork_debug.so" ]; then
+			echo "Qt already built."
+			exit 0
+		else
+			do_build
+		fi
+		;;
+	clean)
+		do_clean
+		;;
+	cleanbuild)
+		do_clean
+		do_build
+		;;
+	*)
+		echo "Usage: byoq {build|clean|cleanbuild}"
+		;;
+esac
+

@@ -1,0 +1,27 @@
+BYOQ (Bring Your Own Qt)
+------------------------
+Version: 0.1-20050204
+Author: Justin Karneges <justin@affinix.com>
+Date: February 4th, 2005
+
+This is a bundle of Qt 4 (just the core, network, xml) intended for easy
+inclusion within an existing application distribution.  As Qt 4 is still
+in development, this package is based on a snapshot version.
+
+It's basically the Qt distribution (sitting in the 'qt' subdirectory), with
+the following changes:
+  - some hacks on .pro files and such to ensure only core/network/xml
+    are built, and only in debug mode
+  - remove the licensing prompt (GPL is assumed)
+  - many files not needed were deleted
+  - added a 'byoq' script to do the building
+
+To build: (does nothing if Qt is already built)
+  ./byoq build
+
+To clean:
+  ./byoq clean
+
+To force build:
+  ./byoq cleanbuild
+
