@@ -37,7 +37,7 @@ AdvancedWidget::Private::Private(AdvancedWidget *_parent)
 
 void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 {
-	if ( stickAt <= 0 )
+	if ( stickAt <= 0 || !stickEnabled )
 		return;
 
 	QWidget *w;
