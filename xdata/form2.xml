@@ -1,0 +1,90 @@
+<x xmlns='jabber:x:data' type='form'>
+	<title>BloodBank-Service Registration</title>
+	<instructions>Welcome to the BloodBank-Service!  We thank you for
+		registering with us and helping to save lives.  Please fill out the
+		following form.</instructions>
+	<field type='hidden' var='form_number'>
+		<value>113452</value>
+	</field>
+	<field type='fixed'>
+		<value>First, please give us some information about yourself.</value>
+	</field>
+	<field type='text-single' label='First Name' var='first'>
+		<required/>
+	</field>
+	<field type='text-single' label='Last Name' var='last'>
+		<required/>
+	</field>
+	<field type='list-single' label='Gender' var='gender'>
+		<value>male</value>
+		<option label='Male'><value>male</value></option>
+		<option label='Female'><value>female</value></option>
+	</field>
+	<field type='fixed'>
+		<value>Now please give us some information about your blood.</value>
+	</field>
+	<field type='list-single' label='Blood Type' var='blood_type'>
+		<required/>
+		<value>a+</value>
+		<option label='A-Positive'><value>a+</value></option>
+		<option label='B-Negative'><value>b-</value></option>
+		etc...
+	</field>
+	<field type='list-single' label='Pints to give' var='pints'>
+		<required/>
+		<value>2</value>
+		<option label='Zero'><value>0</value></option>
+		<option label='One'><value>1</value></option>
+		<option label='Two'><value>2</value></option>
+		<option label='Three'><value>3</value></option>
+		<desc>Please only put the amount you are willing to give, or have given
+		in the past. </desc>
+	</field>
+	<field type='boolean' label='Willing to donate' var='willing'>
+		<required/>
+		<value>1</value>
+	</field>
+
+
+	<field type='fixed'>
+		<value>mblsha Section:</value>
+	</field>
+	<field type='text-single' var='text-single'>
+		<value>text-single</value>
+	</field>
+	<field type='text-private' var='text-private'>
+		<value>text-private</value>
+	</field>
+	<field type='text-multi' var='text-multi'>
+		<value>line1</value>
+		<value>line2</value>
+		<value>line3</value>
+	</field>
+	<field type='list-single' var='list-single'>
+		<value>1</value>
+		<option label='Option 1'>1</option>
+		<option>2</option>
+		<option>3</option>
+	</field>
+	<field type='list-multi' var='list-multi'>
+		<value>1</value>
+		<value>3</value>
+		<option label='Option 1'>1</option>
+		<option label='Option 2'>2</option>
+		<option>3</option>
+		<option>4</option>
+	</field>
+	<field type='fixed' var='fixed'>
+		<value>fixed</value>
+	</field>
+	<field type='hidden' var='hidden'>
+		<value>hidden</value>
+	</field>
+	<field type='jid-single' var='jid-single'>
+		<value>mblsha@jabber.ru</value>
+	</field>
+	<field type='jid-multi' var='jid-multi'>
+		<value>mblsha@jabber.ru</value>
+		<value>mblsha@tipic.com</value>
+	</field>
+</x>
