@@ -13,6 +13,9 @@ public:
 	static int stickAt();
 	static void setStickAt(int val);
 
+	static bool stickToWindows();
+	static void setStickToWindows(bool val);
+
 protected:
 #ifdef Q_OS_WIN
 	bool winEvent(MSG *msg);

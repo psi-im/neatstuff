@@ -18,12 +18,15 @@ public:
 	Private(AdvancedWidget *parent);
 
 	AdvancedWidget *parent;
-	static int stickAt;
+
+	static int  stickAt;
+	static bool stickToWindows;
 
 	void posChanging(int *x, int *y, int width, int height);
 };
 
-int AdvancedWidget::Private::stickAt = 5;
+int  AdvancedWidget::Private::stickAt = 5;
+bool AdvancedWidget::Private::stickToWindows = true;
 
 AdvancedWidget::Private::Private(AdvancedWidget *_parent)
 {
@@ -32,14 +35,17 @@ AdvancedWidget::Private::Private(AdvancedWidget *_parent)
 
 void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 {
-	// maybe cache this value?
+	QWidget *w;
 	QDesktopWidget *desktop = qApp->desktop();
 
-	QWidgetList *list = QApplication::topLevelWidgets();
-	list->append( qApp->desktop() );
+	QWidgetList *list;
+	if ( stickToWindows )
+		list = QApplication::topLevelWidgets();
+	else
+		list = new QWidgetList();
+	list->append( desktop );
 	QWidgetListIt it( *list );
 
-	QWidget *w;
 	for ( ; (w = it.current()); ++it ) {
 		QRect rect;
 		if ( w->isDesktop() )
@@ -49,6 +55,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 			     desktop->screenNumber(parent) != desktop->screenNumber(w) )
 				continue;
 
+			// we want for widget to stick to outer edges of another widget, so
+			// we'll change the rect to what it'll snap
 			rect = QRect(w->frameGeometry().bottomRight(), w->frameGeometry().topLeft());
 		}
 
@@ -110,4 +118,14 @@ int AdvancedWidget::stickAt()
 void AdvancedWidget::setStickAt(int val)
 {
 	Private::stickAt = val;
+}
+
+bool AdvancedWidget::stickToWindows()
+{
+	return Private::stickToWindows;
+}
+
+void AdvancedWidget::setStickToWindows(bool val)
+{
+	Private::stickToWindows = val;
 }
