@@ -152,7 +152,7 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 					     p->frameGeometry().top() <= rect.top())) ) {
 				if ( resizing )
 					*width = p->frameSize().width() + *x - p->x();
-				*x = rect.right() - *width + 1;
+				*x = rect.right() - *width /*+ 1*/;
 			}
 		}
 
@@ -175,7 +175,7 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 					     p->frameGeometry().left() <= rect.left())) ) {
 				if ( resizing )
 					*height = p->frameSize().height() + *y - p->y();
-				*y = rect.bottom() - *height + 1;
+				*y = rect.bottom() - *height /*+ 1*/;
 			}
 		}
 	}
