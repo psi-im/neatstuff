@@ -8,13 +8,13 @@ SOURCES += \
 
 # iconset
 SOURCES += \
-	iconset.cpp \
-	psipng.cpp \
-	anim.cpp
+#	iconset.cpp \
+	psipng.cpp
+#	anim.cpp
 HEADERS += \
-	iconset.h \
-	psipng.h \
-	anim.h
+#	iconset.h \
+	psipng.h
+#	anim.h
 
 # Required widgets
 #SOURCES += \
@@ -54,6 +54,10 @@ include($$WIDGETS_CPP/psiwidgets.pri)
 
 INCLUDEPATH += ../iconset
 VPATH += ../iconset
+
+CONFIG += iconset
+ICONSET_CPP = ../iconset
+include($$ICONSET_CPP/iconset.pri)
 
 INCLUDEPATH += ../misc
 VPATH += ../misc
