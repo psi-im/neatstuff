@@ -33,10 +33,7 @@ AdvancedWidget::Private::Private(AdvancedWidget *_parent)
 void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 {
 	// maybe cache this value?
-	QRect desktop = qApp->desktop()->availableGeometry(parent);
-
-	//QValueList<QRect> windows;
-	//windows.append( desktop );
+	QDesktopWidget *desktop = qApp->desktop();
 
 	QWidgetList *list = QApplication::topLevelWidgets();
 	list->append( qApp->desktop() );
@@ -48,10 +45,11 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 		if ( w->isDesktop() )
 			rect = ((QDesktopWidget *)w)->availableGeometry(parent);
 		else {
-			if ( qApp->desktop()->screenNumber(parent) != qApp->desktop()->screenNumber(w) )
+			if ( w == parent ||
+			     desktop->screenNumber(parent) != desktop->screenNumber(w) )
 				continue;
 
-			rect = w->rect();
+			rect = w->geometry();
 		}
 
 		if ( *x <= rect.left() + stickAt &&
