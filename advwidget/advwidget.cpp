@@ -137,8 +137,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *x <= rect.left() + stickAt &&
 		     *x >  rect.left() - stickAt ) {
 			if ( !dockWidget ||
-			     (dockWidget && (p->frameGeometry().bottom() >= rect.bottom() &&
-					     p->frameGeometry().top() <= rect.top())) ) {
+			     (p->frameGeometry().bottom() >= rect.bottom() &&
+			      p->frameGeometry().top() <= rect.top()) ) {
 				*x = rect.left();
 				if ( resizing )
 					*width = p->frameSize().width() + p->x() - *x;
@@ -148,8 +148,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *x + *width >= rect.right() - stickAt &&
 		     *x + *width <= rect.right() + stickAt ) {
 			if ( !dockWidget ||
-			     (dockWidget && (p->frameGeometry().bottom() >= rect.bottom() &&
-					     p->frameGeometry().top() <= rect.top())) ) {
+			     (p->frameGeometry().bottom() >= rect.bottom() &&
+			      p->frameGeometry().top() <= rect.top()) ) {
 				if ( resizing )
 					*width = rect.right() - *x + 1;
 				else
@@ -161,8 +161,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *y <= rect.top() + stickAt &&
 		     *y >  rect.top() - stickAt ) {
 			if ( !dockWidget ||
-			     (dockWidget && (p->frameGeometry().right() >= rect.right() &&
-					     p->frameGeometry().left() <= rect.left())) ) {
+			     (p->frameGeometry().right() >= rect.right() &&
+			      p->frameGeometry().left() <= rect.left()) ) {
 				*y = rect.top();
 				if ( resizing )
 					*height = p->frameSize().height() + p->y() - *y;
@@ -172,8 +172,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *y + *height >= rect.bottom() - stickAt &&
 		     *y + *height <= rect.bottom() + stickAt ) {
 			if ( !dockWidget ||
-			     (dockWidget && (p->frameGeometry().right() >= rect.right() &&
-					     p->frameGeometry().left() <= rect.left())) ) {
+			     (p->frameGeometry().right() >= rect.right() &&
+			      p->frameGeometry().left() <= rect.left()) ) {
 				if ( resizing )
 					*height = rect.bottom() - *y + 1;
 				else
