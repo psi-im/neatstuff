@@ -118,6 +118,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 	QWidgetListIt it( *list );
 	for ( ; (w = it.current()); ++it ) {
 		QRect rect;
+		bool dockWidget = false;
+
 		if ( w->isDesktop() )
 			rect = ((QDesktopWidget *)w)->availableGeometry((QWidget *)parent());
 		else {
@@ -128,16 +130,23 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 			// we want for widget to stick to outer edges of another widget, so
 			// we'll change the rect to what it'll snap
 			rect = QRect(w->frameGeometry().bottomRight(), w->frameGeometry().topLeft());
+			dockWidget = true;
 		}
+
+		int doneX = false;
+		int doneY = false;
 
 		if ( *x != p->x() )
 		if ( *x <= rect.left() + stickAt &&
 		     *x >  rect.left() - stickAt ) {
+			doneX = true;
+
 			*x = rect.left();
 			if ( resizing )
 				*width = p->frameSize().width() + p->x() - *x;
 		}
 
+		if ( !doneX )
 		if ( *x + *width > rect.right() - stickAt &&
 		     *x + *width < rect.right() + stickAt ) {
 			if ( resizing )
@@ -148,11 +157,14 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *y != p->y() )
 		if ( *y <= rect.top() + stickAt &&
 		     *y >  rect.top() - stickAt ) {
+			doneY = true;
+
 			*y = rect.top();
 			if ( resizing )
 				*height = p->frameSize().height() + p->y() - *y;
 		}
 
+		if ( !doneY )
 		if ( *y + *height > rect.bottom() - stickAt &&
 		     *y + *height < rect.bottom() + stickAt ) {
 			if ( resizing )
