@@ -6,30 +6,6 @@ SOURCES += \
 	main.cpp
 #HEADERS += \
 
-# iconset
-#SOURCES += \
-#	iconset.cpp \
-#	psipng.cpp \
-#	anim.cpp
-#HEADERS += \
-#	iconset.h \
-#	psipng.h \
-#	anim.h
-
-# Required widgets
-#SOURCES += \
-#	fancylabel.cpp \
-#	busywidget.cpp \
-#	psitextview.cpp \
-#	iconwidget.cpp \
-#	iconselect.cpp
-#HEADERS += \
-#	fancylabel.h \
-#	busywidget.h \
-#	psitextview.h \
-#	iconwidget.h \
-#	iconselect.h
-
 # misc
 SOURCES += \
 	zip.cpp \
@@ -62,3 +38,15 @@ include($$ICONSET_CPP/iconset.pri)
 INCLUDEPATH += ../misc
 VPATH += ../misc
 
+
+PSICS_CPP = ../../cutestuff
+INCLUDEPATH += \
+	$$PSICS_CPP/util
+
+HEADERS += \
+	$$PSICS_CPP/util/base64.h \
+	$$PSICS_CPP/util/sha1.h
+
+SOURCES += \
+	$$PSICS_CPP/util/base64.cpp \
+	$$PSICS_CPP/util/sha1.cpp

@@ -18,11 +18,31 @@
 #include <qdir.h>
 #include <qptrlist.h>
 
+class SoundPlayer : public QObject
+{
+	Q_OBJECT
+public:
+	SoundPlayer()
+	: QObject(qApp, "SoundPlayer")
+	{
+		QDir tmp;
+		tmp.mkdir("tmp");
+		Iconset::setSoundPrefs("tmp", this, SLOT(playSound(QString)));
+	}
+
+public slots:
+	void playSound(QString file)
+	{
+		qWarning("SoundPlayer::playSound(\"%s\")", file.latin1());
+	}
+};
+
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
 	initPsiPngIO();
+	new SoundPlayer();
 
 	QPtrList<Iconset> isList;
 	isList.setAutoDelete(true);
@@ -40,6 +60,9 @@ int main(int argc, char *argv[])
 		is->addToFactory();
 		isList.append ( is );
 	}
+
+	// test sound playing
+	IconsetFactory::icon("blah/test").activated();
 
 	/*
 	qWarning("Registered icons:");
@@ -117,3 +140,5 @@ int main(int argc, char *argv[])
 
 	return ret;
 }
+
+#include "main.moc"
