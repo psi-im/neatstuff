@@ -144,12 +144,12 @@ public:
 
 	Iconset &operator=(const Iconset &);
 	Iconset &operator+=(const Iconset &);
-	
+
 	void clear();
 	uint count() const;
-	
+
 	bool load(const QString &dir);
-	
+
 	const Icon *icon(const QString &) const;
 	void setIcon(const QString &, const Icon &);
 	void removeIcon(const QString &);
@@ -159,6 +159,7 @@ public:
 	const QString &description() const;
 	const QStringList &authors() const;
 	const QString &creation() const;
+	const QString &homeUrl() const;
 
 	const QString &fileName() const;
 	void setFileName(const QString &);
@@ -167,7 +168,7 @@ public:
 	void setInfo(const QDict<QString> &);
 	
 	QDictIterator<Icon> iterator() const;
-	
+
 	QMimeSourceFactory *createMimeSourceFactory() const;
 
 	void addToFactory() const;

@@ -731,12 +731,13 @@ private:
 		description = "No description";
 		authors << "I. M. Anonymous";
 		creation = "XXXX-XX-XX";
+		homeUrl = QString::null;
 
 		list.setAutoDelete(true);
 	}
 
 public:
-	QString name, version, description, creation, filename;
+	QString name, version, description, creation, homeUrl, filename;
 	QStringList authors;
 	QDict<Icon> list;
 	QDict<QString> info;
@@ -757,6 +758,7 @@ public:
 		version = from.version;
 		description = from.description;
 		creation = from.creation;
+		homeUrl = from.homeUrl;
 		filename = from.filename;
 		authors = from.authors;
 		info = from.info;
@@ -792,15 +794,52 @@ public:
 		return ba;
 	}
 
-	static int icon_counter; // used to give icon unique names
+	void loadMeta(const QDomElement &i, const QString &dir)
+	{
+		for (QDomNode node = i.firstChild(); !node.isNull(); node = node.nextSibling()) {
+			QDomElement e = node.toElement();
+			if( e.isNull() )
+				continue;
+
+			QString tag = e.tagName();
+			if ( tag == "name" ) {
+				name = e.text();
+			}
+			else if ( tag == "version" ) {
+				version = e.text();
+			}
+			else if ( tag == "description" ) {
+				description = e.text();
+			}
+			else if ( tag == "author" ) {
+				QString name = e.text();
+				if ( !e.attribute("email").isEmpty() )
+					name = QString("%1<br>&nbsp;&nbsp;Email: %2").arg(name).arg( e.attribute("email") );
+				if ( !e.attribute("jid").isEmpty() )
+					name = QString("%1<br>&nbsp;&nbsp;JID: %2").arg(name).arg( e.attribute("jid") );
+				if ( !e.attribute("www").isEmpty() )
+					name = QString("%1<br>&nbsp;&nbsp;WWW: %2").arg(name).arg( e.attribute("www") );
+				authors += name;
+			}
+			else if ( tag == "creation" ) {
+				creation = e.text();
+			}
+			else if ( tag == "home" ) {
+				homeUrl = e.text();
+			}
+		}
+	}
+
+	static int icon_counter; // used to give unique names to icons
 
 	void loadIcon(const QDomElement &i, const QString &dir)
 	{
 		Icon icon;
 
-		QDict<QString> text, graphic, sound;
+		QDict<QString> text, graphic, sound, object;
 		graphic.setAutoDelete(true);
 		sound.setAutoDelete(true);
+		object.setAutoDelete(true);
 
 		QString name;
 		name.sprintf("icon_%04d", icon_counter++);
@@ -816,14 +855,11 @@ public:
 			if ( tag == "text" ) {
 				QString lang = e.attribute("xml:lang");
 				if ( lang.isEmpty() )
-					lang = ""; // otherwise there would be many warnings :(
+					lang = ""; // otherwise there would be many warnings :-(
 				text.insert( lang, new QString(e.text()));
 			}
-			else if ( tag == "graphic" ) {
-				graphic.insert( e.attribute("mime"), new QString(e.text()));
-			}
-			else if ( tag == "sound" ) {
-				sound.insert( e.attribute("mime"), new QString(e.text()));
+			else if ( tag == "object" ) {
+				object.insert( e.attribute("mime"), new QString(e.text()));
 			}
 			else if ( tag == "x" ) {
 				QString attr = e.attribute("xmlns");
@@ -837,12 +873,19 @@ public:
 						isImage = true;
 				}
 			}
+			// leaved for compatibility with old JEP
+			else if ( tag == "graphic" ) {
+				graphic.insert( e.attribute("mime"), new QString(e.text()));
+			}
+			else if ( tag == "sound" ) {
+				sound.insert( e.attribute("mime"), new QString(e.text()));
+			}
 		}
 
 		icon.setText (text);
 		icon.setName (name);
 
-		QStringList graphicMime, soundMime;
+		QStringList graphicMime, soundMime, animationMime;
 		graphicMime << "image/png"; // first item have higher priority than latter
 		graphicMime << "video/x-mng";
 		graphicMime << "image/gif";
@@ -858,18 +901,41 @@ public:
 		soundMime << "audio/x-mp3";
 		soundMime << "audio/x-midi";
 
+		// MIME-types, that support animations
+		animationMime << "image/gif";
+		//animationMime << "image/png";
+		animationMime << "image/x-mng";
+
+		if ( !object.isEmpty() ) {
+			// fill the graphic & sound tables, if there are some
+			// 'object' entries. inspect the supported mimetypes
+			// and copy mime info and file path to 'graphic' and
+			// 'sound' dictonaries.
+
+			QStringList::Iterator it = graphicMime.begin();
+			for ( ; it != graphicMime.end(); ++it)
+				if ( object[*it] && !object[*it]->isNull() )
+					graphic.insert( *it, new QString(*object[*it]));
+
+			it = soundMime.begin();
+			for ( ; it != soundMime.end(); ++it)
+				if ( object[*it] && !object[*it]->isNull() )
+					sound.insert( *it, new QString(*object[*it]));
+		}
+
 		{
 			QStringList::Iterator it = graphicMime.begin();
 			for ( ; it != graphicMime.end(); ++it) {
 				if ( graphic[*it] && !graphic[*it]->isNull() ) {
 					// if format supports animations, then load graphic as animation, and
 					// if there is only one frame, then later it would be converted to single Impix
-					if ( !isAnimated && !isImage &&
-					     ( *it == "image/gif"
-					//    || *it == "image/png"
-					    || *it == "video/x-mng" )) 
-					{
-						isAnimated = true;
+					if ( !isAnimated && !isImage ) {
+						QStringList::Iterator it2 = animationMime.begin();
+						for ( ; it2 != animationMime.end(); ++it2)
+							if ( *it == *it2 ) {
+								isAnimated = true;
+								break;
+							}
 					}
 
 					if ( icon.loadFromData( loadData(*graphic[*it], dir), isAnimated ) )
@@ -928,33 +994,14 @@ public:
 				continue;
 
 			QString tag = i.tagName();
-			if ( tag == "name" ) {
-				name = i.text();
-			}
-			else if ( tag == "version" ) {
-				version = i.text();
-			}
-			else if ( tag == "description" ) {
-				description = i.text();
-			}
-			else if ( tag == "author" ) {
-				QString name = i.text();
-				if ( !i.attribute("email").isEmpty() )
-					name = QString("%1<br>&nbsp;&nbsp;Email: %2").arg(name).arg( i.attribute("email") );
-				if ( !i.attribute("jid").isEmpty() )
-					name = QString("%1<br>&nbsp;&nbsp;JID: %2").arg(name).arg( i.attribute("jid") );
-				if ( !i.attribute("www").isEmpty() )
-					name = QString("%1<br>&nbsp;&nbsp;WWW: %2").arg(name).arg( i.attribute("www") );
-				authors += name;
-			}
-			else if ( tag == "creation" ) {
-				creation = i.text();
+			if ( tag == "meta" ) {
+				loadMeta (i, dir);
 			}
 			else if ( tag == "icon" ) {
 				loadIcon (i, dir);
 			}
 			else if ( tag == "x" ) {
-				info.insert( i.attribute("xmlns"), new QString(i.text()));
+				info.insert( i.attribute("xmlns"), new QString(i.text()) );
 			}
 		}
 
@@ -1131,6 +1178,13 @@ const QStringList &Iconset::authors() const
 const QString &Iconset::creation() const
 {
 	return d->creation;
+}
+
+//!
+//! Returns the Iconsets' home URL.
+const QString &Iconset::homeUrl() const
+{
+	return d->homeUrl;
 }
 
 QDictIterator<Icon> Iconset::iterator() const
