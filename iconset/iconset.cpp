@@ -19,25 +19,33 @@
 **
 ****************************************************************************/
 
-#include"iconset.h"
-#include"zip.h"
+#include "iconset.h"
+#include "zip.h"
 
-#include<qfile.h>
-#include<qfileinfo.h>
-#include<qtimer.h>
+#include <qfile.h>
+#include <qfileinfo.h>
+#include <qtimer.h>
 
-#include<qpixmap.h>
-#include<qimage.h>
-#include<qiconset.h>
-#include<qregexp.h>
-#include<qmime.h>
-#include<qdom.h>
-#include<qfile.h>
-#include<qfileinfo.h>
-#include<qcstring.h>
-#include<qptrvector.h>
+#include <qpixmap.h>
+#include <qimage.h>
+#include <qiconset.h>
+#include <qregexp.h>
+#include <qmime.h>
+#include <qdom.h>
+#include <qfile.h>
+#include <qfileinfo.h>
+#include <qcstring.h>
+#include <qptrvector.h>
 
 #include "anim.h"
+
+// sound support
+#define ICONSET_SOUND
+#ifdef ICONSET_SOUND
+#	include <qdatastream.h>
+#	include <qapplication.h>
+#	include "sha1.h"
+#endif
 
 //----------------------------------------------------------------------------
 // Impix
@@ -232,6 +240,31 @@ void Impix::detach()
 	if ( d->count > 1 )
 		*this = copy();
 }
+
+//----------------------------------------------------------------------------
+// IconSharedObject
+//----------------------------------------------------------------------------
+
+class IconSharedObject : public QObject
+{
+	Q_OBJECT
+public:
+	IconSharedObject()
+#ifdef ICONSET_SOUND
+	: QObject(qApp, "IconSharedObject")
+#endif
+	{ }
+
+	QString unpackPath;
+
+signals:
+	void playSound(QString);
+
+private:
+	friend class Icon;
+};
+
+static IconSharedObject *iconSharedObject = 0;
 
 //----------------------------------------------------------------------------
 // Icon
@@ -553,9 +586,14 @@ void Icon::activated(bool playSound)
 	d->activatedCount++;
 	//qWarning("%-25s Icon::activated(): count = %d", name().latin1(), d->activatedCount);
 
+#ifdef ICONSET_SOUND
 	if ( playSound && !d->sound.isNull() ) {
-		// TODO: insert sound playing code
+		if ( !iconSharedObject )
+			iconSharedObject = new IconSharedObject();
+
+		emit iconSharedObject->playSound(d->sound);
 	}
+#endif
 
 	if ( d->anim ) {
 		d->anim->unpause();
@@ -676,7 +714,7 @@ const Icon *IconsetFactory::iconPtr(const QString &name)
 //!
 //! Returns Icon with name \a name, or empty Icon if Icon with that name wasn't
 //! found in IconsetFactory.
-const Icon IconsetFactory::icon(const QString &name)
+Icon IconsetFactory::icon(const QString &name)
 {
 	const Icon *i = iconPtr(name);
 	if ( i )
@@ -889,13 +927,12 @@ public:
 		graphicMime << "image/png"; // first item have higher priority than latter
 		graphicMime << "video/x-mng";
 		graphicMime << "image/gif";
-		// TODO: untested
-		graphicMime << "image/bmp";
 		graphicMime << "image/x-xpm";
-		graphicMime << "image/svg+xml";
+		graphicMime << "image/bmp";
 		graphicMime << "image/jpeg";
+		// TODO: untested
+		graphicMime << "image/svg+xml";
 
-		// TODO: needs testing
 		soundMime << "audio/x-wav";
 		soundMime << "audio/x-ogg";
 		soundMime << "audio/x-mp3";
@@ -949,11 +986,27 @@ public:
 			QStringList::Iterator it = soundMime.begin();
 			for ( ; it != soundMime.end(); ++it) {
 				if ( sound[*it] && !sound[*it]->isNull() ) {
-					if ( !fi.isDir() ) { // it is a .zip then
-						// TODO: write unpacking code here
-						// probably it should create directory with
-						// archive name in the data directory, and
-						// unpack there...
+					if ( !fi.isDir() ) { // it is a .zip file then
+#ifdef ICONSET_SOUND
+						if ( !iconSharedObject )
+							iconSharedObject = new IconSharedObject();
+
+						QString path = iconSharedObject->unpackPath;
+						if ( path.isEmpty() )
+							break;
+
+						QFileInfo ext(*sound[*it]);
+						path += "/" + SHA1::digest(fi.absFilePath() + "/" + *sound[*it]) + "." + ext.extension();
+
+						QFile file ( path );
+						file.open ( IO_WriteOnly );
+						QDataStream out ( &file );
+
+						QByteArray data = loadData(*sound[*it], dir);
+						out.writeRawBytes (data, data.size());
+
+						icon.setSound ( path );
+#endif
 					}
 					else {
 						icon.setSound ( dir + "/" + *sound[*it] );
@@ -1251,3 +1304,30 @@ void Iconset::removeFromFactory() const
 {
 	IconsetFactoryPrivate::unregisterIconset(this);
 }
+
+//!
+//! Use this function before creation of Iconsets and it will enable the
+//! sound playing ability when Icons are activated().
+//!
+//! \a unpackPath is the path, to where the sound files will be unpacked, if
+//! required (i.e. when sound is stored inside packed iconset.zip file). Unpacked
+//! file name will be unique, and you can empty the unpack directory at the application
+//! exit. Calling application MUST ensure that the \a unpackPath is already created.
+//! If specified \a unpackPath is empty ("" or QString::null) then sounds from archives
+//! will not be unpacked, and only sounds from already unpacked iconsets (that are not
+//! stored in archives) will be played.
+//! \a receiver and \a slot are used to specify the object that will be connected to
+//! the signal 'playSound(QString fileName)'. Slot should play the specified sound
+//! file.
+void Iconset::setSoundPrefs(QString unpackPath, QObject *receiver, const char *slot)
+{
+#ifdef ICONSET_SOUND
+	if ( !iconSharedObject )
+		iconSharedObject = new IconSharedObject();
+
+	iconSharedObject->unpackPath = unpackPath;
+	QObject::connect(iconSharedObject, SIGNAL(playSound(QString)), receiver, slot);
+#endif
+}
+
+#include "iconset.moc"

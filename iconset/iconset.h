@@ -117,19 +117,19 @@ public:
 
 	Icon copy() const;
 	void detach();
-	
+
 signals:
 	void pixmapChanged(const QPixmap &);
 
 public slots:
 	void activated(bool playSound = true);	// it just has been inserted in the text, or now it's being displayed by
 						// some widget. icon should play sound and start animation
-	
+
 	void stop();	// this icon is no more displaying. stop animation
-	
+
 private slots:
 	void animUpdate();
-	
+
 private:
 	class Private;
 	Private *d;
@@ -163,17 +163,19 @@ public:
 
 	const QString &fileName() const;
 	void setFileName(const QString &);
-	
+
 	const QDict<QString> info() const;
 	void setInfo(const QDict<QString> &);
-	
+
 	QDictIterator<Icon> iterator() const;
 
 	QMimeSourceFactory *createMimeSourceFactory() const;
 
 	void addToFactory() const;
 	void removeFromFactory() const;
-	
+
+	static void setSoundPrefs(QString unpackPath, QObject *receiver, const char *slot);
+
 	Iconset copy() const;
 	void detach();
 
@@ -185,7 +187,7 @@ private:
 class IconsetFactory
 {
 public:
-	static const Icon icon(const QString &name);
+	static Icon icon(const QString &name);
 	static const Icon *iconPtr(const QString &name);
 	static const QStringList icons();
 };
