@@ -331,21 +331,18 @@ const QImage &Icon::image() const
 }
 
 //!
-//! Returns Impix of current frame.
+//! Returns Impix of first animation frame.
 //! \sa setImpix()
 const Impix &Icon::impix() const
 {
-	if ( d->anim )
-		return d->anim->frameImpix();
 	return d->impix;
 }
 
 //!
-//! Sets the Icon impix to \a impix. Also unloads animation, if it was present.
+//! Sets the Icon impix to \a impix.
 //! \sa impix()
 void Icon::setImpix(const Impix &impix)
 {
-	d->unloadAnim();
 	d->impix = impix;
 	emit pixmapChanged( pixmap() );
 }
@@ -358,11 +355,21 @@ const Anim *Icon::anim() const
 }
 
 //!
-//! Sets the animation for icon to \a anim.
+//! Sets the animation for icon to \a anim. Also sets Impix to be the first frame of animation.
+//! If animation have less than two frames, it is deleted.
 //! \sa anim()
 void Icon::setAnim(const Anim &anim)
 {
 	d->anim = new Anim(anim);
+
+	if ( d->anim->numFrames() > 0 )
+		setImpix( d->anim->frame(0) );
+
+	if ( d->anim->numFrames() < 2 ) {
+		delete d->anim;
+		d->anim = 0;
+	}
+
 	emit pixmapChanged( pixmap() );
 }
 
@@ -441,15 +448,10 @@ bool Icon::loadFromData(const QByteArray &ba, bool isAnim)
 {
 	bool ret = false;
 	if ( isAnim ) {
-		d->anim = new Anim(ba);
-		if ( d->anim->numFrames() < 2 ) {
-			delete d->anim;
-			d->anim = 0;
-		}
-		else {
-			setImpix( d->anim->frame(0) );
-			ret = true;
-		}
+		Anim *anim = new Anim(ba);
+		setAnim(*anim);
+		delete anim; // shared data rules ;)
+		ret = true;
 	}
 
 	if ( !ret && d->impix.loadFromData(ba) )
@@ -592,7 +594,7 @@ const Icon *IconsetFactory::iconPtr(const QString &name)
 //!
 //! Returns Icon with name \a name, or empty Icon if Icon with that name wasn't
 //! found in IconsetFactory.
-const Icon &IconsetFactory::icon(const QString &name)
+const Icon IconsetFactory::icon(const QString &name)
 {
 	const Icon *i = iconPtr(name);
 	if ( i )

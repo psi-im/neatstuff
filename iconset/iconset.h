@@ -91,7 +91,7 @@ public:
 	
 	const Anim *anim() const;
 	void setAnim(const Anim &);
-	
+
 	const QString &name() const;
 	void setName(const QString &);
 	
@@ -169,7 +169,7 @@ private:
 class IconsetFactory
 {
 public:
-	static const Icon &icon(const QString &name);
+	static const Icon icon(const QString &name);
 	static const Icon *iconPtr(const QString &name);
 	static const QStringList icons();
 };
