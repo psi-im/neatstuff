@@ -145,14 +145,14 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 			}
 		}
 
-		if ( *x + *width > rect.right() - stickAt &&
-		     *x + *width < rect.right() + stickAt ) {
+		if ( *x + *width >= rect.right() - stickAt &&
+		     *x + *width <= rect.right() + stickAt ) {
 			if ( !dockWidget ||
 			     (dockWidget && (p->frameGeometry().bottom() >= rect.bottom() &&
 					     p->frameGeometry().top() <= rect.top())) ) {
 				if ( resizing )
 					*width = p->frameSize().width() + *x - p->x();
-				*x = rect.right() - *width /*+ 1*/;
+				*x = rect.right() - *width + 1;
 			}
 		}
 
@@ -168,14 +168,14 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 			}
 		}
 
-		if ( *y + *height > rect.bottom() - stickAt &&
-		     *y + *height < rect.bottom() + stickAt ) {
+		if ( *y + *height >= rect.bottom() - stickAt &&
+		     *y + *height <= rect.bottom() + stickAt ) {
 			if ( !dockWidget ||
 			     (dockWidget && (p->frameGeometry().right() >= rect.right() &&
 					     p->frameGeometry().left() <= rect.left())) ) {
 				if ( resizing )
 					*height = p->frameSize().height() + *y - p->y();
-				*y = rect.bottom() - *height /*+ 1*/;
+				*y = rect.bottom() - *height + 1;
 			}
 		}
 	}
