@@ -11,7 +11,7 @@ public:
 	QGtk();
 	~QGtk();
 
-	virtual void polishPopupMenu(QPopupMenu*);
+	virtual void polishPopupMenu(QPopupMenu *);
 	virtual void drawPrimitive(QStyle::PrimitiveElement, QPainter*, const QRect&, const QColorGroup&, unsigned int = Style_Default, const QStyleOption& = QStyleOption::Default) const;
 	virtual void drawControl(QStyle::ControlElement, QPainter*, const QWidget*, const QRect&, const QColorGroup&, unsigned int = Style_Default, const QStyleOption& = QStyleOption::Default) const;
 	virtual void drawControlMask(QStyle::ControlElement, QPainter*, const QWidget*, const QRect&, const QStyleOption& = QStyleOption::Default) const;
@@ -24,6 +24,10 @@ public:
 	virtual QSize sizeFromContents(QStyle::ContentsType, const QWidget*, const QSize&, const QStyleOption& = QStyleOption::Default) const;
 	virtual int styleHint(QStyle::StyleHint, const QWidget* = 0, const QStyleOption& = QStyleOption::Default, QStyleHintReturn* = 0) const;
 	virtual QPixmap stylePixmap(QStyle::StylePixmap, const QWidget* = 0, const QStyleOption& = QStyleOption::Default) const;
+
+private:
+	class Private;
+	Private *d;
 };
 
 #endif
