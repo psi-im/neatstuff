@@ -39,3 +39,12 @@ VPATH += ../misc
 
 INCLUDEPATH += ../../cutestuff/util
 VPATH += ../../cutestuff/util
+
+# SHA1 hashing
+PSICS_CPP = ../../cutestuff
+INCLUDEPATH += \
+	$$PSICS_CPP/util
+HEADERS += \
+	$$PSICS_CPP/util/sha1.h
+SOURCES += \
+	$$PSICS_CPP/util/sha1.cpp

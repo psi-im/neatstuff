@@ -1006,10 +1006,11 @@ public:
 						out.writeRawBytes (data, data.size());
 
 						icon.setSound ( path );
+						break;
 #endif
 					}
 					else {
-						icon.setSound ( dir + "/" + *sound[*it] );
+						icon.setSound ( fi.absFilePath() + "/" + *sound[*it] );
 						break;
 					}
 				}
@@ -1028,7 +1029,7 @@ public:
 			}
 
 			// make sure there is some form of whitespace on at least one side of the text string
-			regexp = QString("(\\b(%1))|((%2)\\b)").arg(regexp).arg(regexp);
+			//regexp = QString("(\\b(%1))|((%2)\\b)").arg(regexp).arg(regexp);
 			icon.setRegExp ( regexp );
 		}
 

@@ -38,15 +38,11 @@ include($$ICONSET_CPP/iconset.pri)
 INCLUDEPATH += ../misc
 VPATH += ../misc
 
-
+# SHA1 hashing
 PSICS_CPP = ../../cutestuff
 INCLUDEPATH += \
 	$$PSICS_CPP/util
-
 HEADERS += \
-	$$PSICS_CPP/util/base64.h \
 	$$PSICS_CPP/util/sha1.h
-
 SOURCES += \
-	$$PSICS_CPP/util/base64.cpp \
 	$$PSICS_CPP/util/sha1.cpp
