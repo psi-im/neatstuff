@@ -64,19 +64,20 @@ void AdvancedWidgetShared::deleteTopWidgets()
 static AdvancedWidgetShared *advancedWidgetShared = 0;
 
 //----------------------------------------------------------------------------
-// AdvancedWidget::Private
+// GAdvancedWidget::Private
 //----------------------------------------------------------------------------
 
-class AdvancedWidget::Private : public QObject
+class GAdvancedWidget::Private : public QObject
 {
 	Q_OBJECT
 public:
-	Private(AdvancedWidget *parent);
+	Private(QWidget *parent);
 
 	static int  stickAt;
 	static bool stickToWindows;
 	static bool stickEnabled;
 
+	QWidget *parentWidget;
 	QTimer *flashTimer;
 	int flashCount;
 
@@ -87,26 +88,27 @@ private slots:
 	void flashAnimate();
 };
 
-int  AdvancedWidget::Private::stickAt        = 5;
-bool AdvancedWidget::Private::stickToWindows = true;
-bool AdvancedWidget::Private::stickEnabled   = true;
+int  GAdvancedWidget::Private::stickAt        = 5;
+bool GAdvancedWidget::Private::stickToWindows = true;
+bool GAdvancedWidget::Private::stickEnabled   = true;
 
-AdvancedWidget::Private::Private(AdvancedWidget *parent)
+GAdvancedWidget::Private::Private(QWidget *parent)
 	: QObject(parent)
 {
 	if ( !advancedWidgetShared )
 		advancedWidgetShared = new AdvancedWidgetShared();
 
+	parentWidget = parent;
 	flashTimer = 0;
 	flashCount = 0;
 }
 
-void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *height)
+void GAdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *height)
 {
 	if ( stickAt <= 0 || !stickEnabled )
 		return;
 
-	QWidget *p = (QWidget *)parent();
+	QWidget *p = parentWidget;
 	if ( p->pos() == QPoint(*x, *y) &&
 	     p->frameSize() == QSize(*width, *height) )
 		return;
@@ -197,7 +199,7 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 	}
 }
 
-void AdvancedWidget::Private::doFlash(bool yes)
+void GAdvancedWidget::Private::doFlash(bool yes)
 {
 #ifdef Q_WS_WIN
 	if ( yes ) {
@@ -222,7 +224,7 @@ void AdvancedWidget::Private::doFlash(bool yes)
 #endif
 }
 
-void AdvancedWidget::Private::flashAnimate()
+void GAdvancedWidget::Private::flashAnimate()
 {
 #ifdef Q_WS_WIN
 	FlashWindow( ((QWidget *)parent())->winId(), true );
@@ -232,22 +234,22 @@ void AdvancedWidget::Private::flashAnimate()
 }
 
 //----------------------------------------------------------------------------
-// AdvancedWidget
+// GAdvancedWidget
 //----------------------------------------------------------------------------
 
-AdvancedWidget::AdvancedWidget(QWidget *parent, const char *name)
-	: QWidget(parent, name)
+GAdvancedWidget::GAdvancedWidget(QWidget *parent, const char *name)
+	: QObject(parent, name)
 {
-	d = new Private(this);
+	d = new Private(parent);
 }
 
-AdvancedWidget::~AdvancedWidget()
+GAdvancedWidget::~GAdvancedWidget()
 {
 	delete d;
 }
 
 #ifdef Q_OS_WIN
-bool AdvancedWidget::winEvent(MSG *msg)
+bool GAdvancedWidget::winEvent(MSG *msg)
 {
 	if ( msg->message == WM_WINDOWPOSCHANGING ) {
 		WINDOWPOS *wpos = (WINDOWPOS *)msg->lParam;
@@ -261,7 +263,7 @@ bool AdvancedWidget::winEvent(MSG *msg)
 }
 #endif
 
-void AdvancedWidget::setCaption(const QString &cap)
+void GAdvancedWidget::setCaption(const QString &cap)
 {
 #ifdef Q_WS_WIN
 	bool on = false;
@@ -271,7 +273,7 @@ void AdvancedWidget::setCaption(const QString &cap)
 		FlashWindow( winId(), true );
 #endif
 
-	QWidget::setCaption(cap);
+	// FIXME: QWidget::setCaption was there
 
 #ifdef Q_WS_WIN
 	if ( on )
@@ -279,46 +281,44 @@ void AdvancedWidget::setCaption(const QString &cap)
 #endif
 }
 
-void AdvancedWidget::doFlash(bool on)
+void GAdvancedWidget::doFlash(bool on)
 {
-	d->doFlash( isActiveWindow() && on );
+	d->doFlash( d->parentWidget->isActiveWindow() && on );
 }
 
-void AdvancedWidget::windowActivationChange(bool oldstate)
+void GAdvancedWidget::windowActivationChange(bool oldstate)
 {
-	if ( isActiveWindow() ) {
+	if ( d->parentWidget->isActiveWindow() ) {
 		d->doFlash(false);
 	}
-
-	QWidget::windowActivationChange(oldstate);
 }
 
-int AdvancedWidget::stickAt()
+int GAdvancedWidget::stickAt()
 {
 	return Private::stickAt;
 }
 
-void AdvancedWidget::setStickAt(int val)
+void GAdvancedWidget::setStickAt(int val)
 {
 	Private::stickAt = val;
 }
 
-bool AdvancedWidget::stickToWindows()
+bool GAdvancedWidget::stickToWindows()
 {
 	return Private::stickToWindows;
 }
 
-void AdvancedWidget::setStickToWindows(bool val)
+void GAdvancedWidget::setStickToWindows(bool val)
 {
 	Private::stickToWindows = val;
 }
 
-bool AdvancedWidget::stickEnabled()
+bool GAdvancedWidget::stickEnabled()
 {
 	return Private::stickEnabled;
 }
 
-void AdvancedWidget::setStickEnabled(bool val)
+void GAdvancedWidget::setStickEnabled(bool val)
 {
 	Private::stickEnabled = val;
 }

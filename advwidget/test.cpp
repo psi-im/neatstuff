@@ -10,7 +10,7 @@
 
 #include "ui_test.h"
 
-class TestDialog : public AdvancedWidget
+class TestDialog : public AdvancedWidget<QWidget>
 {
 	Q_OBJECT
 public:
@@ -20,9 +20,9 @@ private:
 	TestWidget *d;
 
 private slots:
-	void setStickOn(bool b) { AdvancedWidget::setStickEnabled(b); }
-	void setStickAt(int i) { AdvancedWidget::setStickAt(i); }
-	void setStickWindowsOn(bool b) { AdvancedWidget::setStickToWindows(b); }
+	void setStickOn(bool b) { AdvancedWidget<QWidget>::setStickEnabled(b); }
+	void setStickAt(int i) { AdvancedWidget<QWidget>::setStickAt(i); }
+	void setStickWindowsOn(bool b) { AdvancedWidget<QWidget>::setStickToWindows(b); }
 	void flashOn() { doFlash(true); }
 	void flashOff() { doFlash(false); }
 };
@@ -49,11 +49,11 @@ int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
-	AdvancedWidget *widget = new TestDialog();
+	TestDialog *widget = new TestDialog();
 	widget->show();
 	app.setMainWidget(widget);
 
-	AdvancedWidget *widget2 = new AdvancedWidget();
+	AdvancedWidget<QWidget> *widget2 = new AdvancedWidget<QWidget>;
 	widget2->show();
 
 	return app.exec();
