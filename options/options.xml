@@ -1,0 +1,64 @@
+<options version="1.0" >
+        <ztest type="list" >
+                <item type="string" >String!!!</item>
+                <item type="bool" >true</item>
+                <item type="string_list" >
+                        <item>item1</item>
+                        <item>item2</item>
+                        <item>item3</item>
+                </item>
+        </ztest>
+        <toolbars>
+                <toolbar0>
+                        <keys type="string_list" >
+                                <item>button_status</item>
+                        </keys>
+                        <name type="string" >Кноппочки :)</name>
+                        <on type="bool" >true</on>
+                        <position>
+                                <dock type="string" >DockBottom</dock>
+                                <extraOffset type="int" >0</extraOffset>
+                                <index type="int" >1</index>
+                                <nl type="bool" >true</nl>
+                        </position>
+                        <stretchable type="bool" >true</stretchable>
+                </toolbar0>
+                <toolbar1>
+                        <keys type="string_list" >
+                                <item>button_options</item>
+                                <item>show_offline</item>
+                                <item>show_away</item>
+                                <item>show_agents</item>
+                        </keys>
+                        <name type="string" >Useful</name>
+                        <on type="bool" >true</on>
+                        <position>
+                                <dock type="string" >DockBottom</dock>
+                                <extraOffset type="int" >0</extraOffset>
+                                <index type="int" >0</index>
+                                <nl type="bool" >true</nl>
+                        </position>
+                        <stretchable type="bool" >false</stretchable>
+                </toolbar1>
+                <toolbar2>
+                        <keys type="string_list" >
+                                <item>menu_new_message</item>
+                                <item>separator</item>
+                                <item>menu_join_groupchat</item>
+                                <item>menu_browse</item>
+                                <item>menu_options</item>
+                                <item>separator</item>
+                                <item>menu_play_sounds</item>
+                        </keys>
+                        <name type="string" >Tools</name>
+                        <on type="bool" >true</on>
+                        <position>
+                                <dock type="string" >DockTop</dock>
+                                <extraOffset type="int" >0</extraOffset>
+                                <index type="int" >0</index>
+                                <nl type="bool" >true</nl>
+                        </position>
+                        <stretchable type="bool" >false</stretchable>
+                </toolbar2>
+        </toolbars>
+</options>

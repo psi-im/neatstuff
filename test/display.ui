@@ -1,0 +1,137 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>DisplayDlg</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>DisplayDlg</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>363</width>
+            <height>335</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Iconset Display Dialog</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
+        <widget class="FancyLabel">
+            <property name="name">
+                <cstring>fancy</cstring>
+            </property>
+            <property name="iconName" stdset="0">
+                <string>message/chat</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout5</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <widget class="IconsetDisplay">
+                    <property name="name">
+                        <cstring>is_display</cstring>
+                    </property>
+                </widget>
+                <widget class="Line">
+                    <property name="name">
+                        <cstring>line2</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout4</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="BusyWidget">
+                            <property name="name">
+                                <cstring>busyWidget2</cstring>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="IconButton">
+                            <property name="name">
+                                <cstring>ib_done</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Done</string>
+                            </property>
+                            <property name="iconName" stdset="0">
+                                <string>button/done</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>ib_done</sender>
+        <signal>clicked()</signal>
+        <receiver>DisplayDlg</receiver>
+        <slot>accept()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">display.ui.h</include>
+</includes>
+<forwards>
+    <forward>class Iconset;</forward>
+</forwards>
+<slots>
+    <slot>setIconset( const Iconset &amp; i )</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>fancylabel.h</includehint>
+    <includehint>iconwidget.h</includehint>
+    <includehint>busywidget.h</includehint>
+    <includehint>iconwidget.h</includehint>
+</includehints>
+</UI>

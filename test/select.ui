@@ -1,0 +1,242 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>SelectDlg</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>SelectDlg</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>398</width>
+            <height>217</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Iconset Selection Dialog</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout7</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="IconsetSelect">
+                    <property name="name">
+                        <cstring>is_select</cstring>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <bold>1</bold>
+                        </font>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout6</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="IconButton">
+                            <property name="name">
+                                <cstring>ib_moveUp</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Move &amp;Up</string>
+                            </property>
+                            <property name="iconName" stdset="0">
+                                <string>button/up</string>
+                            </property>
+                            <property name="textVisible">
+                                <bool>false</bool>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer1</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>105</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="IconButton">
+                            <property name="name">
+                                <cstring>ib_moveDown</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Move &amp;Down</string>
+                            </property>
+                            <property name="iconName" stdset="0">
+                                <string>button/down</string>
+                            </property>
+                            <property name="textVisible">
+                                <bool>false</bool>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout6</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="BusyWidget">
+                    <property name="name">
+                        <cstring>busy</cstring>
+                    </property>
+                </widget>
+                <widget class="IconButton">
+                    <property name="name">
+                        <cstring>ib_displayAll</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Display All Icons</string>
+                    </property>
+                    <property name="iconName" stdset="0">
+                        <string>button/view</string>
+                    </property>
+                </widget>
+                <widget class="IconButton">
+                    <property name="name">
+                        <cstring>ib_showPopup</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Select Icon</string>
+                    </property>
+                    <property name="iconName" stdset="0">
+                        <string>button/view</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>108</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="IconButton">
+                    <property name="name">
+                        <cstring>ib_test</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Yahoo!</string>
+                    </property>
+                    <property name="iconName" stdset="0">
+                        <string>button/launch</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>ib_test</sender>
+        <signal>clicked()</signal>
+        <receiver>SelectDlg</receiver>
+        <slot>yahoo()</slot>
+    </connection>
+    <connection>
+        <sender>is_select</sender>
+        <signal>currentChanged(QListBoxItem*)</signal>
+        <receiver>SelectDlg</receiver>
+        <slot>selectionChanged()</slot>
+    </connection>
+    <connection>
+        <sender>ib_displayAll</sender>
+        <signal>clicked()</signal>
+        <receiver>SelectDlg</receiver>
+        <slot>displayAll()</slot>
+    </connection>
+    <connection>
+        <sender>ib_moveUp</sender>
+        <signal>clicked()</signal>
+        <receiver>is_select</receiver>
+        <slot>moveItemUp()</slot>
+    </connection>
+    <connection>
+        <sender>ib_moveDown</sender>
+        <signal>clicked()</signal>
+        <receiver>is_select</receiver>
+        <slot>moveItemDown()</slot>
+    </connection>
+    <connection>
+        <sender>ib_showPopup</sender>
+        <signal>clicked()</signal>
+        <receiver>SelectDlg</receiver>
+        <slot>selectIcon()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">select.ui.h</include>
+</includes>
+<forwards>
+    <forward>class IconSelectPopup;</forward>
+</forwards>
+<variables>
+    <variable access="private">int iconNum;</variable>
+    <variable access="private">IconSelectPopup *iconSelectPopup;</variable>
+</variables>
+<slots>
+    <slot>displayAll()</slot>
+    <slot>selectIcon()</slot>
+    <slot>yahoo()</slot>
+    <slot>selectionChanged()</slot>
+    <slot access="private">init()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>iconwidget.h</includehint>
+    <includehint>iconwidget.h</includehint>
+    <includehint>iconwidget.h</includehint>
+    <includehint>busywidget.h</includehint>
+    <includehint>iconwidget.h</includehint>
+    <includehint>iconwidget.h</includehint>
+</includehints>
+</UI>
