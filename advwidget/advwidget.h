@@ -11,7 +11,7 @@ public:
 	~AdvancedWidget();
 
 	static bool stickEnabled();
-	static bool setStickEnabled(bool val);
+	static void setStickEnabled(bool val);
 
 	static int stickAt();
 	static void setStickAt(int val);

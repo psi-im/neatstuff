@@ -140,7 +140,7 @@ bool AdvancedWidget::stickEnabled()
 	return Private::stickEnabled;
 }
 
-bool AdvancedWidget::setStickEnabled(bool val)
+void AdvancedWidget::setStickEnabled(bool val)
 {
 	Private::stickEnabled = val;
 }
