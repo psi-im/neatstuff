@@ -50,36 +50,19 @@ private:
 	mutable int fullW, fullH;
 
 public:
-	IconsetSelectItem(QListBox *parent, IconsetSelectItem *after, const Iconset &i)
-	: IconWidgetItem(parent, after)
+	IconsetSelectItem(QListBox *parent, IconsetSelectItem *after, const Iconset &_iconset)
+	: IconWidgetItem(parent, after), iss(_iconset)
 	{
-		setIconset(i);
-	}
-
-	~IconsetSelectItem()
-	{
-#ifndef WIDGET_PLUGIN
-		QMap<Icon*, QRect>::Iterator it;
-		for (it = iconRects.begin(); it != iconRects.end(); it++)
-			it.key()->stop();
-#endif
-	}
-
-	void setIconset(const Iconset &i)
-	{
-#ifndef WIDGET_PLUGIN
-		iss = i;
-
-		setText( i.name() );
+		setText( iss.name() );
 
 		w = margin;
 		h = 2*margin;
 
 		int count;
 
-		QDictIterator<Icon> it = i.iterator();
+		QDictIterator<Icon> it = iss.iterator();
 		for (count = 0; it.current(); ++it) {
-			if ( count >= displayNumIcons )
+			if ( count++ >= displayNumIcons )
 				break; // display only first displayNumIcons icons
 
 			QPixmap pix = it.current()->pixmap();
@@ -91,8 +74,6 @@ public:
 
 			connect (it.current(), SIGNAL(pixmapChanged(const QPixmap &)), SLOT(iconUpdated(const QPixmap &)));
 			it.current()->activated(false); // start animation
-
-			count++;
 		}
 
 		QMap<Icon*, QRect>::Iterator it2;
@@ -100,11 +81,22 @@ public:
 			QRect r = it2.data();
 			it2.data() = QRect( r.x(), (h - r.height())/2, r.width(), r.height() );
 		}
+	}
+
+	~IconsetSelectItem()
+	{
+		qWarning("point 5-1");
+#ifndef WIDGET_PLUGIN
+		QMap<Icon*, QRect>::Iterator it;
+		for (it = iconRects.begin(); it != iconRects.end(); it++)
+			it.key()->stop();
 #endif
+		qWarning("point 5-2");
 	}
 
 	const Iconset *iconset() const
 	{
+		qWarning("point 4-1");
 #ifndef WIDGET_PLUGIN
 		return &iss;
 #else
@@ -138,7 +130,7 @@ public:
 		}
 #endif
 	}
-	
+
 private slots:
 	void iconUpdated(const QPixmap &)
 	{
@@ -152,11 +144,11 @@ private slots:
 class IconsetSelect::Private
 {
 public:
-	Private() 
-	{ 
+	Private()
+	{
 		lastItem = 0;
 	}
-	
+
 	IconsetSelectItem *lastItem;
 };
 

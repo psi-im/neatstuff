@@ -209,6 +209,8 @@ bool Impix::loadFromData(const QByteArray &ba)
 	\class Icon
 	\brief Can contain Anim and stuff
 
+	TODO: Add conversion functions to QIconSet.
+
 	This class can be used for storing application icons as well as emoticons
 	(it has special functions in order to do that).
 
@@ -259,14 +261,18 @@ Icon::Icon()
 : QObject(0, 0)
 {
 	d = new Private;
+	qWarning("CON d->count = %d", d->count);
 }
 
 //!
 //! Destroys Icon.
 Icon::~Icon()
 {
-	if ( d->deref() )
+	if ( d->deref() ) {
+		qWarning("Deleteting Icon...");
 		delete d;
+	}
+	qWarning("DES d->count = %d", d->count);
 }
 
 //!
@@ -277,6 +283,7 @@ Icon::Icon(const Icon &from)
 {
 	d = from.d;
 	d->ref();
+	qWarning("COPYCON d->count = %d", d->count);
 	//qWarning("Icon: name = %s; regExp = %s", d->name.latin1(), d->regExp.pattern().latin1());
 }
 
@@ -735,7 +742,7 @@ public:
 		graphicMime << "image/gif";
 		graphicMime << "image/bmp";
 		graphicMime << "image/x-xpm";
-		//graphicMime << "image/svg+xml";
+		graphicMime << "image/svg+xml"; // untested
 		graphicMime << "image/jpeg";
 
 		soundMime << "audio/x-wav"; // same here

@@ -51,7 +51,7 @@ void SelectDlg::selectionChanged()
 
 	const Iconset *is = is_select->iconset();
 	if ( is )
-		iconSelectPopup->setIconset( *is );
+		iconSelectPopup->setIconset( Iconset(*is) );
 }
 
 

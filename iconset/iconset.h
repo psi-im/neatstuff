@@ -31,6 +31,7 @@
 
 class QImage;
 class QPixmap;
+class QIconSet;
 class QMimeSourceFactory;
 class Anim;
 
