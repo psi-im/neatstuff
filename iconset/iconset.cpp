@@ -413,7 +413,7 @@ const QDict<QString> &Icon::text() const
 //! \sa text()
 void Icon::setText(const QDict<QString> &t)
 {
-	d->text = text;
+	d->text = t;
 }
 
 //!
