@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<icondef>
+	<name>Stellar - MSN</name>
+	<version>1.0</version>
+	<description>Some MSN icons</description>
+
+	<icon>
+		<text>(l)</text>
+		<text>(L)</text>
+		<graphic mime="image/png">heart.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(u)</text>
+		<text>(U)</text>
+		<graphic mime="image/png">brheart.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(y)</text>
+		<text>(Y)</text>
+		<graphic mime="image/png">yes.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(n)</text>
+		<text>(N)</text>
+		<graphic mime="image/png">no.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(z)</text>
+		<text>(Z)</text>
+		<graphic mime="image/png">boy.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(x)</text>
+		<text>(X)</text>
+		<graphic mime="image/png">girl.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(@)</text>
+		<graphic mime="image/png">pussy.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(})</text>
+		<graphic mime="image/png">hugleft.png</graphic>
+	</icon>
+
+	<icon>
+		<text>({)</text>
+		<graphic mime="image/png">hugright.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(6)</text>
+		<graphic mime="image/png">devil.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(r)</text>
+		<text>(R)</text>
+		<graphic mime="image/png">rainbow.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(w)</text>
+		<text>(W)</text>
+		<graphic mime="image/png">brflower.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(f)</text>
+		<text>(F)</text>
+		<graphic mime="image/png">flower.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(p)</text>
+		<text>(P)</text>
+		<graphic mime="image/png">photo.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(t)</text>
+		<text>(T)</text>
+		<graphic mime="image/png">phone.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(*)</text>
+		<graphic mime="image/png">star.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(8)</text>
+		<graphic mime="image/png">music.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(i)</text>
+		<text>(I)</text>
+		<graphic mime="image/png">lamp.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(b)</text>
+		<text>(B)</text>
+		<graphic mime="image/png">beer.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(d)</text>
+		<text>(D)</text>
+		<graphic mime="image/png">drink.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(c)</text>
+		<text>(C)</text>
+		<graphic mime="image/png">coffee.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(%)</text>
+		<graphic mime="image/png">cuffs.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(e)</text>
+		<text>(E)</text>
+		<graphic mime="image/png">mail.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(h)</text>
+		<text>(H)</text>
+		<graphic mime="image/png">coolglasses.png</graphic>
+	</icon>
+
+	<icon>
+		<text>(k)</text>
+		<text>(K)</text>
+		<graphic mime="image/png">kiss.png</graphic>
+	</icon>
+</icondef>
