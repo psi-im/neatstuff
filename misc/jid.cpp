@@ -20,6 +20,8 @@
  *
  */
 
+// Test: $Id: jid.cpp,v 1.2 2004-06-24 17:32:49 mblsha Exp $
+
 #include"jid.h"
 
 using namespace Jabber;
