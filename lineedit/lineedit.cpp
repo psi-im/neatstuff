@@ -24,7 +24,12 @@ LineEdit::LineEdit(QWidget *parent)
 //	setVScrollBarMode(QScrollView::AlwaysOff);
 //	setHScrollBarMode(QScrollView::AlwaysOff);
 
-	setTextFormat(RichText);
+	setWordWrap(QTextEdit::WidgetWidth);
+
+	setReadOnly(false);
+	setUndoRedoEnabled(true);
+
+	setTextFormat(PlainText);
 
 	connect( this, SIGNAL( textChanged() ), SLOT( recalculateSize() ) );
 }

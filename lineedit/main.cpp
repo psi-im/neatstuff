@@ -7,7 +7,8 @@ int main( int argc, char *argv[] )
 {
 	QApplication app( argc, argv );
 
-	QWidget w( 0, 0, QWidget::WRepaintNoErase );
+	QWidget w;
+	//QWidget w( 0, 0, QWidget::WRepaintNoErase );
 	app.setMainWidget( &w );
 
 	QVBoxLayout l( &w );
