@@ -137,8 +137,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *x <= rect.left() + stickAt &&
 		     *x >  rect.left() - stickAt ) {
 			if ( !dockWidget ||
-			     (dockWidget && (p->frameGeometry().bottom() >= rect.top() &&
-					     p->frameGeometry().top() <= rect.bottom())) ) {
+			     (dockWidget && (p->frameGeometry().bottom() >= rect.bottom() &&
+					     p->frameGeometry().top() <= rect.top())) ) {
 				*x = rect.left();
 				if ( resizing )
 					*width = p->frameSize().width() + p->x() - *x;
@@ -148,8 +148,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *x + *width > rect.right() - stickAt &&
 		     *x + *width < rect.right() + stickAt ) {
 			if ( !dockWidget ||
-			     (dockWidget && (p->frameGeometry().bottom() >= rect.top() &&
-					     p->frameGeometry().top() <= rect.bottom())) ) {
+			     (dockWidget && (p->frameGeometry().bottom() >= rect.bottom() &&
+					     p->frameGeometry().top() <= rect.top())) ) {
 				if ( resizing )
 					*width = p->frameSize().width() + *x - p->x();
 				*x = rect.right() - *width + 1;
@@ -160,8 +160,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *y <= rect.top() + stickAt &&
 		     *y >  rect.top() - stickAt ) {
 			if ( !dockWidget ||
-			     (dockWidget && (p->frameGeometry().right() >= rect.left() &&
-					     p->frameGeometry().left() <= rect.right())) ) {
+			     (dockWidget && (p->frameGeometry().right() >= rect.right() &&
+					     p->frameGeometry().left() <= rect.left())) ) {
 				*y = rect.top();
 				if ( resizing )
 					*height = p->frameSize().height() + p->y() - *y;
@@ -171,8 +171,8 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		if ( *y + *height > rect.bottom() - stickAt &&
 		     *y + *height < rect.bottom() + stickAt ) {
 			if ( !dockWidget ||
-			     (dockWidget && (p->frameGeometry().right() >= rect.left() &&
-					     p->frameGeometry().left() <= rect.right())) ) {
+			     (dockWidget && (p->frameGeometry().right() >= rect.right() &&
+					     p->frameGeometry().left() <= rect.left())) ) {
 				if ( resizing )
 					*height = p->frameSize().height() + *y - p->y();
 				*y = rect.bottom() - *height + 1;
