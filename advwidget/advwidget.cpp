@@ -130,6 +130,7 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 			rect = QRect(w->frameGeometry().bottomRight(), w->frameGeometry().topLeft());
 		}
 
+		if ( *x != p->x() )
 		if ( *x <= rect.left() + stickAt &&
 		     *x >  rect.left() - stickAt ) {
 			*x = rect.left();
@@ -144,6 +145,7 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 			*x = rect.right() - *width + 1;
 		}
 
+		if ( *y != p->y() )
 		if ( *y <= rect.top() + stickAt &&
 		     *y >  rect.top() - stickAt ) {
 			*y = rect.top();
