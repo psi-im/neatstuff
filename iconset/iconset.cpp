@@ -345,7 +345,7 @@ const Impix &Icon::impix() const
 //! \sa impix()
 void Icon::setImpix(const Impix &impix)
 {
-	unloadAnim();
+	d->unloadAnim();
 	d->impix = impix;
 	emit pixmapChanged( pixmap() );
 }
