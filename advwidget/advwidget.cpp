@@ -133,43 +133,50 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 			dockWidget = true;
 		}
 
-		int doneX = false;
-		int doneY = false;
-
 		if ( *x != p->x() )
 		if ( *x <= rect.left() + stickAt &&
 		     *x >  rect.left() - stickAt ) {
-			doneX = true;
-
-			*x = rect.left();
-			if ( resizing )
-				*width = p->frameSize().width() + p->x() - *x;
+			if ( !dockWidget ||
+			     (dockWidget && (p->frameGeometry().bottom() >= rect.top() &&
+					     p->frameGeometry().top() <= rect.bottom())) ) {
+				*x = rect.left();
+				if ( resizing )
+					*width = p->frameSize().width() + p->x() - *x;
+			}
 		}
 
-		if ( !doneX )
 		if ( *x + *width > rect.right() - stickAt &&
 		     *x + *width < rect.right() + stickAt ) {
-			if ( resizing )
-				*width = p->frameSize().width() + *x - p->x();
-			*x = rect.right() - *width + 1;
+			if ( !dockWidget ||
+			     (dockWidget && (p->frameGeometry().bottom() >= rect.top() &&
+					     p->frameGeometry().top() <= rect.bottom())) ) {
+				if ( resizing )
+					*width = p->frameSize().width() + *x - p->x();
+				*x = rect.right() - *width + 1;
+			}
 		}
 
 		if ( *y != p->y() )
 		if ( *y <= rect.top() + stickAt &&
 		     *y >  rect.top() - stickAt ) {
-			doneY = true;
-
-			*y = rect.top();
-			if ( resizing )
-				*height = p->frameSize().height() + p->y() - *y;
+			if ( !dockWidget ||
+			     (dockWidget && (p->frameGeometry().right() >= rect.left() &&
+					     p->frameGeometry().left() <= rect.right())) ) {
+				*y = rect.top();
+				if ( resizing )
+					*height = p->frameSize().height() + p->y() - *y;
+			}
 		}
 
-		if ( !doneY )
 		if ( *y + *height > rect.bottom() - stickAt &&
 		     *y + *height < rect.bottom() + stickAt ) {
-			if ( resizing )
-				*height = p->frameSize().height() + *y - p->y();
-			*y = rect.bottom() - *height + 1;
+			if ( !dockWidget ||
+			     (dockWidget && (p->frameGeometry().right() >= rect.left() &&
+					     p->frameGeometry().left() <= rect.right())) ) {
+				if ( resizing )
+					*height = p->frameSize().height() + *y - p->y();
+				*y = rect.bottom() - *height + 1;
+			}
 		}
 	}
 }
