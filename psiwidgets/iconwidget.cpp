@@ -51,8 +51,12 @@ private:
 
 public:
 	IconsetSelectItem(QListBox *parent, IconsetSelectItem *after, const Iconset &_iconset)
-	: IconWidgetItem(parent, after), iss(_iconset)
+	: IconWidgetItem(parent, after)
+#ifndef WIDGET_PLUGIN
+	, iss(_iconset)
+#endif
 	{
+#ifndef WIDGET_PLUGIN
 		setText( iss.name() );
 
 		w = margin;
@@ -81,6 +85,7 @@ public:
 			QRect r = it2.data();
 			it2.data() = QRect( r.x(), (h - r.height())/2, r.width(), r.height() );
 		}
+#endif
 	}
 
 	~IconsetSelectItem()
