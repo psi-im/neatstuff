@@ -98,7 +98,6 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		return;
 
 	bool resizing = p->frameSize() != QSize(*width, *height);
-	int oldX = *x, oldY = *y;
 
 	advancedWidgetShared->startTimer();
 
@@ -135,20 +134,29 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 		     *x >  rect.left() - stickAt ) {
 			*x = rect.left();
 			if ( resizing )
-				*width = p->frameSize().width() + oldX - *x;
+				*width = p->frameSize().width() + p->x() - *x;
 		}
 
 		if ( *x + *width > rect.right() - stickAt &&
-		     *x + *width < rect.right() + stickAt )
+		     *x + *width < rect.right() + stickAt ) {
 			*x = rect.right() - *width + 1;
+			if ( resizing )
+				*width = p->frameSize().width() + *x - p->x();
+		}
 
 		if ( *y <= rect.top() + stickAt &&
-		     *y >  rect.top() - stickAt )
+		     *y >  rect.top() - stickAt ) {
 			*y = rect.top();
+			if ( resizing )
+				*height = p->frameSize().height() + p->y() - *y;
+		}
 
 		if ( *y + *height > rect.bottom() - stickAt &&
-		     *y + *height < rect.bottom() + stickAt )
+		     *y + *height < rect.bottom() + stickAt ) {
 			*y = rect.bottom() - *height + 1;
+			if ( resizing )
+				*height = p->frameSize().height() + *y - p->y();
+		}
 	}
 }
 
