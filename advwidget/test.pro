@@ -1,5 +1,5 @@
 TEMPLATE = app
-CONFIG += qt
+CONFIG += qt debug
 
 SOURCES += \
 	advwidget.cpp \

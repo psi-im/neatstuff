@@ -1,3 +1,23 @@
+/*
+ * advwidget.cpp - AdvancedWidget template class
+ * Copyright (C) 2005  Michail Pishchagin
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
 #include "advwidget.h"
 
 #include <qapplication.h>
@@ -78,11 +98,14 @@ public:
 	static bool stickEnabled;
 
 	QWidget *parentWidget;
-	QTimer *flashTimer;
-	int flashCount;
 
+	bool flashing();
 	void doFlash(bool on);
 	void posChanging(int *x, int *y, int *width, int *height);
+
+private:
+	QTimer *flashTimer;
+	int flashCount;
 
 private slots:
 	void flashAnimate();
@@ -227,10 +250,19 @@ void GAdvancedWidget::Private::doFlash(bool yes)
 void GAdvancedWidget::Private::flashAnimate()
 {
 #ifdef Q_WS_WIN
-	FlashWindow( ((QWidget *)parent())->winId(), true );
+	FlashWindow( parentWidget->winId(), true );
 	if ( ++flashCount == 5 )
 		flashTimer->stop();
 #endif
+}
+
+bool GAdvancedWidget::Private::flashing()
+{
+	bool on = false;
+	if ( flashTimer )
+		on = flashCount & 1;
+
+	return on;
 }
 
 //----------------------------------------------------------------------------
@@ -263,20 +295,18 @@ bool GAdvancedWidget::winEvent(MSG *msg)
 }
 #endif
 
-void GAdvancedWidget::setCaption(const QString &cap)
+void GAdvancedWidget::preSetCaption()
 {
 #ifdef Q_WS_WIN
-	bool on = false;
-	if ( d->flashTimer )
-		on = d->flashCount & 1;
-	if ( on )
+	if ( d->flashing() )
 		FlashWindow( d->parentWidget->winId(), true );
 #endif
+}
 
-	// FIXME: QWidget::setCaption was there
-
+void GAdvancedWidget::postSetCaption()
+{
 #ifdef Q_WS_WIN
-	if ( on )
+	if ( d->flashing() )
 		FlashWindow( d->parentWidget->winId(), true );
 #endif
 }

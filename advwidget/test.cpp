@@ -7,6 +7,7 @@
 #include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qpushbutton.h>
+#include <qlineedit.h>
 
 #include "ui_test.h"
 
@@ -25,6 +26,7 @@ private slots:
 	void setStickWindowsOn(bool b) { AdvancedWidget<QWidget>::setStickToWindows(b); }
 	void flashOn() { doFlash(true); }
 	void flashOff() { doFlash(false); }
+	void captionChanged( const QString &s ) { setCaption(s); }
 };
 
 TestDialog::TestDialog()
@@ -41,6 +43,8 @@ TestDialog::TestDialog()
 
 	connect(d->pb_flashOn, SIGNAL(clicked()), SLOT(flashOn()));
 	connect(d->pb_flashOff, SIGNAL(clicked()), SLOT(flashOff()));
+
+	connect(d->leCaption, SIGNAL(textChanged(const QString &)), SLOT(captionChanged(const QString &)));
 
 	resize(minimumSizeHint());
 }
