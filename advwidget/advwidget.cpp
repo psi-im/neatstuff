@@ -38,16 +38,16 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 	     *x > -stickAt )
 		*x = desktop.left();
 
-	if ( ((*x + width) > (desktop.right() - stickAt)) &&
-	     ((*x + width) < (desktop.right() + stickAt)) )
+	if ( *x + width > desktop.right() - stickAt &&
+	     *x + width < desktop.right() + stickAt )
 		*x = desktop.right() - width + 1;
 
-	if ( (*y <= (desktop.top() + stickAt)) &&
-	     (*y > -stickAt) )
+	if ( *y <= desktop.top() + stickAt &&
+	     *y > -stickAt )
 		*y = desktop.top();
 
-	if ( (*y + height > desktop.bottom() - stickAt) &&
-	     (*y + height < desktop.bottom() + stickAt) )
+	if ( *y + height > desktop.bottom() - stickAt &&
+	     *y + height < desktop.bottom() + stickAt )
 		*y = desktop.bottom() - height + 1;
 }
 
@@ -56,6 +56,7 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 //----------------------------------------------------------------------------
 
 AdvancedWidget::AdvancedWidget(QWidget *parent, const char *name)
+	: QWidget(parent, name)
 {
 	d = new Private(this);
 }
