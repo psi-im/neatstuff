@@ -9,6 +9,8 @@
 #include <winuser.h>
 #endif
 
+// TODO: Make use of KDE taskbar flashing support
+
 //----------------------------------------------------------------------------
 // AdvancedWidgetShared
 //----------------------------------------------------------------------------
@@ -64,8 +66,9 @@ static AdvancedWidgetShared *advancedWidgetShared = 0;
 // AdvancedWidget::Private
 //----------------------------------------------------------------------------
 
-class AdvancedWidget::Private : QObject
+class AdvancedWidget::Private : public QObject
 {
+	Q_OBJECT
 public:
 	Private(AdvancedWidget *parent);
 
@@ -73,7 +76,14 @@ public:
 	static bool stickToWindows;
 	static bool stickEnabled;
 
+	QTimer *flashTimer;
+	int flashCount;
+
+	void doFlash(bool on);
 	void posChanging(int *x, int *y, int *width, int *height);
+
+private slots:
+	void flashAnimate();
 };
 
 int  AdvancedWidget::Private::stickAt        = 5;
@@ -85,6 +95,9 @@ AdvancedWidget::Private::Private(AdvancedWidget *parent)
 {
 	if ( !advancedWidgetShared )
 		advancedWidgetShared = new AdvancedWidgetShared();
+
+	flashTimer = 0;
+	flashCount = 0;
 }
 
 void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *height)
@@ -183,6 +196,40 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int *width, int *heigh
 	}
 }
 
+void AdvancedWidget::Private::doFlash(bool yes)
+{
+#ifdef Q_WS_WIN
+	if ( yes ) {
+		if ( flashTimer )
+			return;
+		flashTimer = new QTimer(this);
+		connect(flashTimer, SIGNAL(timeout()), SLOT(flashAnimate()));
+		flashCount = 0;
+		flashAnimate(); // kick the first one immediately
+		flashTimer->start(500);
+	}
+	else {
+		if ( flashTimer ) {
+			delete flashTimer;
+			flashTimer = 0;
+			// comment this out to fix titlebar repaint on Windows??
+			//FlashWindow(winId(), false);
+		}
+	}
+#else
+	Q_UNUSED(yes)
+#endif
+}
+
+void AdvancedWidget::Private::flashAnimate()
+{
+#ifdef Q_WS_WIN
+	FlashWindow( ((QWidget *)parent())->winId(), true );
+	if ( ++flashCount == 5 )
+		flashTimer->stop();
+#endif
+}
+
 //----------------------------------------------------------------------------
 // AdvancedWidget
 //----------------------------------------------------------------------------
@@ -212,6 +259,38 @@ bool AdvancedWidget::winEvent(MSG *msg)
 	return false;
 }
 #endif
+
+void AdvancedWidget::setCaption(const QString &cap)
+{
+#ifdef Q_WS_WIN
+	bool on = false;
+	if ( d->flashTimer )
+		on = d->flashCount & 1;
+	if ( on )
+		FlashWindow( winId(), true );
+#endif
+
+	QWidget::setCaption(cap);
+
+#ifdef Q_WS_WIN
+	if ( on )
+		FlashWindow( winId(), true );
+#endif
+}
+
+void AdvancedWidget::doFlash(bool on)
+{
+	d->doFlash( isActiveWindow() && on );
+}
+
+void AdvancedWidget::windowActivationChange(bool oldstate)
+{
+	if ( isActiveWindow() ) {
+		d->doFlash(false);
+	}
+
+	QWidget::windowActivationChange(oldstate);
+}
 
 int AdvancedWidget::stickAt()
 {

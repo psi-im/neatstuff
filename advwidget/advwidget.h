@@ -19,13 +19,21 @@ public:
 	static bool stickToWindows();
 	static void setStickToWindows(bool val);
 
+	void doFlash(bool on);
+
+public slots:
+	void setCaption(const QString &);
+
 protected:
 #ifdef Q_OS_WIN
 	bool winEvent(MSG *msg);
 #endif
 
-private:
+	void windowActivationChange(bool oldstate);
+
+public:
 	class Private;
+private:
 	Private *d;
 };
 
