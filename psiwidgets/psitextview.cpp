@@ -71,7 +71,7 @@ QPopupMenu *URLObject::createPopupMenu(const QString &l)
 
 #ifndef WIDGET_PLUGIN
 	if ( icon )
-		m->insertItem(QIconSet(*icon), action, this, SLOT(popupAction()));
+		m->insertItem(/*QIconSet(*/ *icon /*)*/, action, this, SLOT(popupAction()));
 	else
 #endif
 		m->insertItem(action, this, SLOT(popupAction()));
