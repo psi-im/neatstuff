@@ -10,6 +10,7 @@
 #endif
 
 // TODO: Make use of KDE taskbar flashing support
+// TODO: Use FlashWindowEx instead of FlashWindow!
 
 //----------------------------------------------------------------------------
 // AdvancedWidgetShared
