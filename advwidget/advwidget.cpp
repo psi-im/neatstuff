@@ -270,14 +270,14 @@ void GAdvancedWidget::setCaption(const QString &cap)
 	if ( d->flashTimer )
 		on = d->flashCount & 1;
 	if ( on )
-		FlashWindow( winId(), true );
+		FlashWindow( d->parentWidget->winId(), true );
 #endif
 
 	// FIXME: QWidget::setCaption was there
 
 #ifdef Q_WS_WIN
 	if ( on )
-		FlashWindow( winId(), true );
+		FlashWindow( d->parentWidget->winId(), true );
 #endif
 }
 
