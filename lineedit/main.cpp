@@ -7,7 +7,7 @@ int main( int argc, char *argv[] )
 {
 	QApplication app( argc, argv );
 
-	QWidget w;
+	QWidget w( 0, 0, QWidget::WRepaintNoErase );
 	app.setMainWidget( &w );
 
 	QVBoxLayout l( &w );
@@ -18,6 +18,10 @@ int main( int argc, char *argv[] )
 
 	LineEdit le( &w );
 	l.addWidget( &le );
+
+	le.setFocus();
+
+	QObject::connect( &le, SIGNAL( addText( const QString & ) ), &tv, SLOT( append( const QString & ) ) );
 
 	w.show();
 	return app.exec();

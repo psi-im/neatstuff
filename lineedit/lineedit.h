@@ -11,9 +11,17 @@ public:
 	~LineEdit();
 
 	QSize sizeHint() const;
+	void keyPressEvent( QKeyEvent *e );
+
+signals:
+	void addText(const QString &);
 
 public slots:
 	void recalculateSize();
+
+private:
+	class Private;
+	Private *d;
 };
 
 #endif
