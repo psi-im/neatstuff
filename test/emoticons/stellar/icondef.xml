@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<icondef>
+	<meta>
+	<name>Stellar</name>
+	<version>1.0</version>
+	<description>Stellar theme</description>
+	</meta>
+
+	<icon>
+		<x xmlns="name">status/stellar/away</x>
+		<graphic mime="image/png">away.png</graphic>
+	</icon>	
+	<icon>
+		<x xmlns="name">status/stellar/dnd</x>
+		<graphic mime="image/png">dnd.png</graphic>
+	</icon>	
+	<icon>
+		<x xmlns="name">status/stellar/offline</x>
+		<graphic mime="image/png">offline.png</graphic>
+	</icon>	
+	<icon>
+		<x xmlns="name">status/stellar/online</x>
+		<graphic mime="image/png">online.png</graphic>
+	</icon>	
+	<icon>
+		<x xmlns="name">status/stellar/xa</x>
+		<graphic mime="image/png">xa.png</graphic>
+	</icon>	
+	<icon>
+		<x xmlns="name">status/stellar/ask</x>
+		<graphic mime="image/png">ask.png</graphic>
+	</icon>	
+	<icon>
+		<x xmlns="name">status/stellar/no_auth</x>
+		<graphic mime="image/png">noauth.png</graphic>
+	</icon>
+	<icon>
+		<x xmlns="name">status/stellar/ffc</x>
+		<graphic mime="image/png">ffc.png</graphic>
+	</icon>
+	<icon>
+		<x xmlns="name">status/stellar/invisible</x>
+		<graphic mime="image/png">invisible.png</graphic>
+	</icon>
+</icondef>

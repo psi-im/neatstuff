@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<icondef>
+	<meta>
+	<name>Stellar</name>
+	<version>1.0</version>
+	<description>Default Psi theme</description>
+	<creation>2003-01-25</creation>
+	<author>Hideaki Omuro</author>
+	<author>Jason Kim</author>
+	</meta>
+	
+	<!-- Message icons -->
+	<icon>
+		<x xmlns="name">message/headline</x>
+		<graphic mime="image/png">headline.png</graphic>
+	</icon>
+	<icon>
+		<x xmlns="name">message/message</x>
+		<x xmlns="type">animation</x>
+		<graphic mime="image/png">message.png</graphic>
+	</icon>
+	<icon>
+		<x xmlns="name">message/send</x>
+		<graphic mime="image/png">send.png</graphic>
+	</icon>
+	<icon>
+		<x xmlns="name">message/system</x>
+		<x xmlns="type">animation</x>
+		<graphic mime="image/png">system.png</graphic>
+	</icon>
+	<icon>
+		<x xmlns="name">message/chat</x>
+		<x xmlns="type">animation</x>
+		<graphic mime="image/png">chat.png</graphic>
+	</icon>
+	
+	<icon>
+		<x xmlns="name">test/fire</x>
+		<x xmlns="type">animation</x>
+		<graphic mime="video/x-mng">fire.mng</graphic>
+	</icon>
+</icondef>
