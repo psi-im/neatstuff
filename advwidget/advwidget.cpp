@@ -49,7 +49,7 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 			     desktop->screenNumber(parent) != desktop->screenNumber(w) )
 				continue;
 
-			rect = w->geometry();
+			rect = QRect(w->frameGeometry().bottomRight(), w->frameGeometry().topLeft());
 		}
 
 		if ( *x <= rect.left() + stickAt &&
