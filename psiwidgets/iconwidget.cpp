@@ -396,9 +396,11 @@ public:
 
 	void setIcon(Icon *i)
 	{
+#ifndef WIDGET_PLUGIN
 		iconStop();
 		icon = new Icon(*i);
 		iconStart();
+#endif
 	}
 
 	void iconStart()
