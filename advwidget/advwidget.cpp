@@ -71,7 +71,7 @@ bool AdvancedWidget::winEvent(MSG *msg)
 	if ( msg->message == WM_WINDOWPOSCHANGING ) {
 		WINDOWPOS *wpos = (WINDOWPOS *)msg->lParam;
 
-		d->posChanging(&wpos->x, &wpos->y, &wpos->cx, &wpos->cy);
+		d->posChanging(&wpos->x, &wpos->y, wpos->cx, wpos->cy);
 
 		return true;
 	}
