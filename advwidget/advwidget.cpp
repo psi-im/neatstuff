@@ -21,12 +21,14 @@ public:
 
 	static int  stickAt;
 	static bool stickToWindows;
+	static bool stickEnabled;
 
 	void posChanging(int *x, int *y, int width, int height);
 };
 
 int  AdvancedWidget::Private::stickAt = 5;
 bool AdvancedWidget::Private::stickToWindows = true;
+bool AdvancedWidget::Private::stickEnabled = true;
 
 AdvancedWidget::Private::Private(AdvancedWidget *_parent)
 {
@@ -35,6 +37,9 @@ AdvancedWidget::Private::Private(AdvancedWidget *_parent)
 
 void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 {
+	if ( stickAt <= 0 )
+		return;
+
 	QWidget *w;
 	QDesktopWidget *desktop = qApp->desktop();
 
@@ -128,4 +133,14 @@ bool AdvancedWidget::stickToWindows()
 void AdvancedWidget::setStickToWindows(bool val)
 {
 	Private::stickToWindows = val;
+}
+
+bool AdvancedWidget::stickEnabled()
+{
+	return Private::stickEnabled;
+}
+
+bool AdvancedWidget::setStickEnabled(bool val)
+{
+	Private::stickEnabled = val;
 }
