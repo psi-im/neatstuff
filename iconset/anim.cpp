@@ -63,7 +63,12 @@ public:
 		{
 			delete impix;
 		}
-		
+		Frame(const Frame &from)
+		{
+			impix = new Impix( *from.impix );
+			period = from.period;
+		}
+
 		Impix *impix;
 		int period;
 	};
@@ -74,7 +79,9 @@ public:
 public:
 	void init()
 	{
-		frametimer = 0;
+		//frametimer = 0;
+		frametimer = new QTimer(this);
+		QObject::connect(frametimer, SIGNAL(timeout()), this, SLOT(refresh()));
 	
 		speed = 100;
 		lasttimerinterval = -1;
@@ -91,12 +98,32 @@ public:
 		init();
 	}
 	
+	Private(const Private &from)
+	: QObject(), QShared(), QImageConsumer()
+	{
+		init();
+
+		speed = from.speed;
+		lasttimerinterval = from.lasttimerinterval;
+		frameperiod = from.frameperiod;
+		looping = from.looping;
+		loop = from.loop;
+		frame = from.frame;
+		paused = from.paused;
+
+		for ( uint i = 0; i < from.frames.count(); i++ ) {
+			frames.resize ( frames.count()+1 );
+			frames.insert ( frames.count(), new Frame( *from.frames[i] ) );
+		}
+
+		if ( !paused )
+			unpause();
+	}
+
 	Private(const QByteArray ba)
 	{
 		init();
 		
-		frametimer = new QTimer(this);
-		QObject::connect(frametimer, SIGNAL(timeout()), this, SLOT(refresh()));
 		decoder = new QImageDecoder(this);
 		
 		uchar *buf = reinterpret_cast<uchar *>(ba.data());
@@ -353,6 +380,21 @@ void Anim::connectUpdate(QObject *receiver, const char *member)
 void Anim::disconnectUpdate(QObject *receiver, const char *member)
 {
 	QObject::disconnect(d, SIGNAL(areaChanged()), receiver, member);
+}
+
+Anim Anim::copy() const
+{
+	Anim anim( *this );
+	anim.d->deref();
+	anim.d = new Private( *this->d );
+
+	return anim;
+}
+
+void Anim::detach()
+{
+	if ( d->count > 1 )
+		*this = copy();
 }
 
 #include "anim.moc"

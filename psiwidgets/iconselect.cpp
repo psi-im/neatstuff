@@ -26,6 +26,7 @@ class IconSelectButton : public QButton
 private:
 	Icon *ic;
 	QSize s;
+	bool animated;
 
 public:
 	IconSelectButton(QWidget *parent, const char *name = 0)
@@ -33,6 +34,7 @@ public:
 	{
 		//setFocusPolicy(StrongFocus);
 		ic = 0;
+		animated = false;
 		connect (this, SIGNAL(clicked()), SLOT(iconSelected()));
 	}
 
@@ -45,7 +47,7 @@ public:
 	{
 		iconStop();
 		ic = (Icon *)i;
-		iconStart();
+		//iconStart();
 	}
 
 	const Icon *icon() const
@@ -59,12 +61,19 @@ public:
 signals:
 	void iconSelected(const Icon *);
 
+public slots:
+	void aboutToShow() { iconStart(); }
+	void aboutToHide() { iconStop();  }
+
 private:
 	void iconStart()
 	{
 		if ( ic ) {
 			connect(ic, SIGNAL(pixmapChanged(const QPixmap &)), SLOT(iconUpdated(const QPixmap &)));
-			ic->activated(false);
+			if ( !animated ) {
+				ic->activated(false);
+				animated = true;
+			}
 
 			if ( !ic->text().isEmpty() ) {
 				QString str;
@@ -84,7 +93,10 @@ private:
 	{
 		if ( ic ) {
 			disconnect(ic, 0, this, 0 );
-			ic->stop();
+			if ( animated ) {
+				ic->stop();
+				animated = false;
+			}
 		}
 	}
 
@@ -238,8 +250,6 @@ void IconSelect::setIconset(const Iconset &iconset)
 		size = c - 1;
 	}
 
-	//size = 4; // debug
-
 	// now, fill grid with elements
 	grid = new QGridLayout(this, size, size);
 	grid->setAutoAdd(true);
@@ -255,6 +265,9 @@ void IconSelect::setIconset(const Iconset &iconset)
 		b->setIcon( *it );
 		b->setSizeHint( QSize(tileSize, tileSize) );
 		connect (b, SIGNAL(iconSelected(const Icon *)), parent(), SIGNAL(iconSelected(const Icon *)));
+
+		connect (parent(), SIGNAL(aboutToShow()), b, SLOT(aboutToShow()));
+		connect (parent(), SIGNAL(aboutToHide()), b, SLOT(aboutToHide()));
 	}
 }
 

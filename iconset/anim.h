@@ -53,6 +53,9 @@ public:
 	void connectUpdate(QObject *receiver, const char *member);
 	void disconnectUpdate(QObject *receiver, const char *member = 0);
 
+	Anim copy() const;
+	void detach();
+
 	class Private;
 private:
 	Private *d;

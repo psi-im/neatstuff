@@ -108,5 +108,12 @@ int main(int argc, char *argv[])
 	sd->show();
 #endif
 
-	return app.exec();
+	int ret = app.exec();
+
+#ifdef DIALOG_TEST
+	delete sd;
+	isList.clear();
+#endif
+
+	return ret;
 }

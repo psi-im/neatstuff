@@ -52,11 +52,9 @@ private:
 public:
 	IconsetSelectItem(QListBox *parent, IconsetSelectItem *after, const Iconset &_iconset)
 	: IconWidgetItem(parent, after)
-#ifndef WIDGET_PLUGIN
-	, iss(_iconset)
-#endif
 	{
 #ifndef WIDGET_PLUGIN
+		iss = _iconset;
 		setText( iss.name() );
 
 		w = margin;
@@ -90,18 +88,15 @@ public:
 
 	~IconsetSelectItem()
 	{
-		qWarning("point 5-1");
 #ifndef WIDGET_PLUGIN
 		QMap<Icon*, QRect>::Iterator it;
 		for (it = iconRects.begin(); it != iconRects.end(); it++)
 			it.key()->stop();
 #endif
-		qWarning("point 5-2");
 	}
 
 	const Iconset *iconset() const
 	{
-		qWarning("point 4-1");
 #ifndef WIDGET_PLUGIN
 		return &iss;
 #else
@@ -223,7 +218,7 @@ void IconsetSelect::paintCell(QPainter *p, int row, int col)
 		return;
 	}
 
-	int w = contentsWidth(); //QMAX(width(), item->width(this));
+	int w = contentsWidth();
 	int h = item->height(this);
 	QPixmap pix(w, h);
 	QPainter p2;
@@ -236,7 +231,7 @@ void IconsetSelect::paintCell(QPainter *p, int row, int col)
 
 
 //----------------------------------------------------------------------------
-// IconsetSelect
+// IconsetDisplay
 //----------------------------------------------------------------------------
 
 class IconsetDisplayItem : public IconWidgetItem
@@ -358,7 +353,7 @@ void IconsetDisplay::paintCell(QPainter *p, int row, int col)
 		return;
 	}
 
-	int w = contentsWidth(); //QMAX(width(), item->width(this));
+	int w = contentsWidth();
 	int h = item->height(this);
 	QPixmap pix(w, h);
 	QPainter p2;
@@ -402,7 +397,7 @@ public:
 	void setIcon(Icon *i)
 	{
 		iconStop();
-		icon = i;
+		icon = new Icon(*i);
 		iconStart();
 	}
 
@@ -411,7 +406,7 @@ public:
 #ifndef WIDGET_PLUGIN
 		if ( icon ) {
 			connect(icon, SIGNAL(pixmapChanged(const QPixmap &)), SLOT(iconUpdated(const QPixmap &)));
-			icon->activated(true); // TODO: should icon play sound when it's activated on button?
+			icon->activated(true); // FIXME: should icon play sound when it's activated on button?
 			iconUpdated( icon->pixmap() );
 		}
 		else
@@ -425,6 +420,9 @@ public:
 		if ( icon ) {
 			disconnect(icon, 0, this, 0 );
 			icon->stop();
+
+			delete icon;
+			icon = 0;
 		}
 #endif
 	}

@@ -60,6 +60,9 @@ public:
 	
 	bool loadFromData(const QByteArray &);
 
+	Impix copy() const;
+	void detach();
+
 private:
 	class Private;
 	Private *d;
@@ -83,9 +86,14 @@ public:
 	//! see image().
 	operator const QImage &() const { return image(); }
 	
+	//!
+	//! see iconSet().
+	operator const QIconSet &() const { return iconSet(); }
+
 	bool isAnimated() const;
 	const QPixmap &pixmap() const;
 	const QImage &image() const;
+	const QIconSet & iconSet() const;
 	
 	const Impix &impix() const;
 	void setImpix(const Impix &);
@@ -106,6 +114,9 @@ public:
 	void setSound(const QString &);
 	
 	bool loadFromData(const QByteArray &, bool isAnimation);
+
+	Icon copy() const;
+	void detach();
 	
 signals:
 	void pixmapChanged(const QPixmap &);
@@ -162,6 +173,9 @@ public:
 	void addToFactory() const;
 	void removeFromFactory() const;
 	
+	Iconset copy() const;
+	void detach();
+
 private:
 	class Private;
 	Private *d;
