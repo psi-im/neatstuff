@@ -7,9 +7,11 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	AdvancedWidget *widget = new AdvancedWidget();
+	widget->show();
 	app.setMainWidget(widget);
 
-	widget->show();
+	AdvancedWidget *widget2 = new AdvancedWidget();
+	widget2->show();
 
 	return app.exec();
 }

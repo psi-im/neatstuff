@@ -1,6 +1,7 @@
 #include "advwidget.h"
 
 #include <qapplication.h>
+#include <qwidgetlist.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -34,21 +35,43 @@ void AdvancedWidget::Private::posChanging(int *x, int *y, int width, int height)
 	// maybe cache this value?
 	QRect desktop = qApp->desktop()->availableGeometry(parent);
 
-	if ( *x <= desktop.left() + stickAt &&
-	     *x > -stickAt )
-		*x = desktop.left();
+	//QValueList<QRect> windows;
+	//windows.append( desktop );
 
-	if ( *x + width > desktop.right() - stickAt &&
-	     *x + width < desktop.right() + stickAt )
-		*x = desktop.right() - width + 1;
+	QWidgetList *list = QApplication::topLevelWidgets();
+	list->append( qApp->desktop() );
+	QWidgetListIt it( *list );
 
-	if ( *y <= desktop.top() + stickAt &&
-	     *y > -stickAt )
-		*y = desktop.top();
+	QWidget *w;
+	for ( ; (w = it.current()); ++it ) {
+		QRect rect;
+		if ( w->isDesktop() )
+			rect = ((QDesktopWidget *)w)->availableGeometry(parent);
+		else {
+			if ( qApp->desktop()->screenNumber(parent) != qApp->desktop()->screenNumber(w) )
+				continue;
 
-	if ( *y + height > desktop.bottom() - stickAt &&
-	     *y + height < desktop.bottom() + stickAt )
-		*y = desktop.bottom() - height + 1;
+			rect = w->rect();
+		}
+
+		if ( *x <= rect.left() + stickAt &&
+		     *x >  rect.left() - stickAt )
+			*x = rect.left();
+
+		if ( *x + width > rect.right() - stickAt &&
+		     *x + width < rect.right() + stickAt )
+			*x = rect.right() - width + 1;
+
+		if ( *y <= rect.top() + stickAt &&
+		     *y >  rect.top() - stickAt )
+			*y = rect.top();
+
+		if ( *y + height > rect.bottom() - stickAt &&
+		     *y + height < rect.bottom() + stickAt )
+			*y = rect.bottom() - height + 1;
+	}
+
+	delete list;
 }
 
 //----------------------------------------------------------------------------
