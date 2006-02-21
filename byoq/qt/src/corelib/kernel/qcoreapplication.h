@@ -1,0 +1,213 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the QtCore module of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QCOREAPPLICATION_H
+#define QCOREAPPLICATION_H
+
+#include <QtCore/qobject.h>
+#include <QtCore/qcoreevent.h>
+#include <QtCore/qeventloop.h>
+
+#ifdef QT_INCLUDE_COMPAT
+#include <QtCore/qstringlist.h>
+#endif
+
+QT_MODULE(Core)
+
+#if defined(Q_WS_WIN) && !defined(tagMSG)
+typedef struct tagMSG MSG;
+#endif
+
+class QCoreApplicationPrivate;
+class QTextCodec;
+class QTranslator;
+class QPostEventList;
+class QStringList;
+
+class Q_CORE_EXPORT QCoreApplication : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName)
+    Q_PROPERTY(QString organizationName READ organizationName WRITE setOrganizationName)
+    Q_PROPERTY(QString organizationDomain READ organizationDomain WRITE setOrganizationDomain)
+
+    Q_DECLARE_PRIVATE(QCoreApplication)
+public:
+    QCoreApplication(int &argc, char **argv);
+    ~QCoreApplication();
+
+    static int argc();
+    static char **argv();
+    static QStringList arguments();
+
+    static void setOrganizationDomain(const QString &orgDomain);
+    static QString organizationDomain();
+    static void setOrganizationName(const QString &orgName);
+    static QString organizationName();
+    static void setApplicationName(const QString &application);
+    static QString applicationName();
+
+    static QCoreApplication *instance() { return self; }
+
+    static int exec();
+    static void processEvents(QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents);
+    static void processEvents(QEventLoop::ProcessEventsFlags flags, int maxtime);
+    static void exit(int retcode=0);
+
+    static bool sendEvent(QObject *receiver, QEvent *event);
+    static void postEvent(QObject *receiver, QEvent *event);
+    static void sendPostedEvents(QObject *receiver, int event_type);
+    static void sendPostedEvents();
+    static void removePostedEvents(QObject *receiver);
+    static bool hasPendingEvents();
+
+    virtual bool notify(QObject *, QEvent *);
+
+    static bool startingUp();
+    static bool closingDown();
+
+    static QString applicationDirPath();
+    static QString applicationFilePath();
+
+#ifndef QT_NO_LIBRARY
+    static void setLibraryPaths(const QStringList &);
+    static QStringList libraryPaths();
+    static void addLibraryPath(const QString &);
+    static void removeLibraryPath(const QString &);
+#endif // QT_NO_LIBRARY
+
+#ifndef QT_NO_TRANSLATION
+    static void installTranslator(QTranslator * messageFile);
+    static void removeTranslator(QTranslator * messageFile);
+#endif
+    enum Encoding { DefaultCodec, UnicodeUTF8 };
+    static QString translate(const char * context,
+                             const char * key,
+                             const char * comment = 0,
+                             Encoding encoding = DefaultCodec);
+
+    static void flush();
+
+#if defined(QT3_SUPPORT)
+    inline QT3_SUPPORT void lock() {}
+    inline QT3_SUPPORT void unlock(bool = true) {}
+    inline QT3_SUPPORT bool locked() { return false; }
+    inline QT3_SUPPORT bool tryLock() { return false; }
+
+    static inline QT3_SUPPORT void processOneEvent()
+    { processEvents(QEventLoop::WaitForMoreEvents); }
+    static QT3_SUPPORT int enter_loop();
+    static QT3_SUPPORT void exit_loop();
+    static QT3_SUPPORT int loopLevel();
+#endif
+
+#if defined(Q_WS_WIN)
+    virtual bool winEventFilter(MSG *message, long *result);
+#endif
+
+#ifdef Q_OS_UNIX
+    static void watchUnixSignal(int signal, bool watch);
+#endif
+
+    typedef bool (*EventFilter)(void *message, long *result);
+    EventFilter setEventFilter(EventFilter filter);
+    bool filterEvent(void *message, long *result);
+
+public Q_SLOTS:
+    static void quit();
+
+Q_SIGNALS:
+    void aboutToQuit();
+    void unixSignal(int);
+
+protected:
+    bool event(QEvent *);
+
+    virtual bool compressEvent(QEvent *, QObject *receiver, QPostEventList *);
+
+protected:
+    QCoreApplication(QCoreApplicationPrivate &p);
+
+private:
+    static bool sendSpontaneousEvent(QObject *receiver, QEvent *event);
+
+    void init();
+
+    static QCoreApplication *self;
+
+    friend class QEventDispatcherUNIXPrivate;
+    friend class QApplication;
+    friend class QApplicationPrivate;
+    friend class QETWidget;
+    friend class Q3AccelManager;
+    friend class QShortcutMap;
+    friend class QWidget;
+    friend class QWidgetPrivate;
+    friend bool qt_sendSpontaneousEvent(QObject*, QEvent*);
+    friend Q_CORE_EXPORT QString qAppName();
+};
+
+inline bool QCoreApplication::sendEvent(QObject *receiver, QEvent *event)
+{  if (event) event->spont = false; return self ? self->notify(receiver, event) : false; }
+
+inline bool QCoreApplication::sendSpontaneousEvent(QObject *receiver, QEvent *event)
+{ if (event) event->spont = true; return self ? self->notify(receiver, event) : false; }
+
+inline void QCoreApplication::sendPostedEvents() { sendPostedEvents(0, 0); }
+
+#ifdef QT_NO_TRANSLATION
+// Simple versions
+inline QString QCoreApplication::translate(const char *, const char *sourceText,
+                                           const char *, Encoding encoding)
+{
+#ifndef QT_NO_TEXTCODEC
+    if (encoding == UnicodeUTF8)
+        return QString::fromUtf8(sourceText);
+#else
+    Q_UNUSED(encoding)
+#endif
+    return QString::fromLatin1(sourceText);
+}
+#endif
+
+#define Q_DECLARE_TR_FUNCTIONS(context) \
+public: \
+    static inline QString tr(const char *sourceText, const char *comment = 0) \
+        { return QCoreApplication::translate(#context, sourceText, comment); } \
+    static inline QString trUtf8(const char *sourceText, const char *comment = 0) \
+        { return QCoreApplication::translate(#context, sourceText, comment, \
+                                             QCoreApplication::UnicodeUTF8); } \
+private:
+
+typedef void (*QtCleanUpFunction)();
+
+Q_CORE_EXPORT void qAddPostRoutine(QtCleanUpFunction);
+Q_CORE_EXPORT void qRemovePostRoutine(QtCleanUpFunction);
+Q_CORE_EXPORT QString qAppName();                // get application name
+
+#if defined(Q_WS_WIN) && !defined(QT_NO_DEBUG_STREAM)
+Q_CORE_EXPORT QString decodeMSG(const MSG &);
+Q_CORE_EXPORT QDebug operator<<(QDebug, const MSG &);
+#endif
+
+#endif // QCOREAPPLICATION_H

@@ -1,0 +1,117 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the QtCore module of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/*!
+    \class QStack
+    \brief The QStack class is a template class that provides a stack.
+
+    \ingroup tools
+    \ingroup shared
+    \mainclass
+    \reentrant
+
+    QStack\<T\> is one of Qt's generic \l{container classes}. It implements
+    a stack data structure for items of a same type.
+
+    A stack is a last in, first out (LIFO) structure. Items are added
+    to the top of the stack using push() and retrieved from the top
+    using pop(). The top() function provides access to the topmost
+    item without removing it.
+
+    Example:
+    \code
+        QStack<int> stack;
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        while (!stack.isEmpty())
+            cout << stack.pop() << endl;
+    \endcode
+
+    The example will output 3, 2, 1 in that order.
+
+    QStack inherits from QVector. All of QVector's functionality also
+    applies to QStack. For example, you can use isEmpty() to test
+    whether the stack is empty, and you can traverse a QStack using
+    QVector's iterator classes (for example, QVectorIterator). But in
+    addition, QStack provides three convenience functions that make
+    it easy to implement LIFO semantics: push(), pop(), and top().
+
+    QStack's value type must be an \l{assignable data type}. This
+    covers most data types that are commonly used, but the compiler
+    won't let you, for example, store a QWidget as a value; instead,
+    store a QWidget *.
+
+    \sa QVector, QQueue
+*/
+
+/*!
+    \fn QStack::QStack()
+
+    Constructs an empty stack.
+*/
+
+/*!
+    \fn QStack::~QStack()
+
+    Destroys the stack. References to the values in the stack, and all
+    iterators over this stack, become invalid.
+*/
+
+/*!
+    \fn void QStack::push(const T& t)
+
+    Adds element \a t to the top of the stack.
+
+    This is the same as QVector::append().
+
+    \sa pop(), top()
+*/
+
+/*!
+    \fn T& QStack::top()
+
+    Returns a reference to the stack's top item. This function
+    assumes that the stack isn't empty.
+
+    This is the same as QVector::last().
+
+    \sa pop(), push(), isEmpty()
+*/
+
+/*!
+    \fn const T& QStack::top() const
+
+    \overload
+
+    \sa pop(), push()
+*/
+
+/*!
+    \fn T QStack::pop()
+
+    Removes the top item from the stack and returns it. This function
+    assumes that the stack isn't empty.
+
+    \sa top(), push(), isEmpty()
+*/

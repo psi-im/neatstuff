@@ -1,0 +1,799 @@
+# Kernel
+
+Feature: PROPERTIES
+Section: Kernel
+Requires: 
+Name: Properties
+SeeAlso: ???
+
+Feature: THREAD
+Section: Kernel
+Requires:
+Name: Thread support
+SeeAlso: ???
+
+Feature: DRAGANDDROP
+Section: Kernel
+Requires: QWS_PROPERTIES IMAGEFORMAT_XPM
+Name: Drag and drop
+SeeAlso: ???
+
+Feature: SESSIONMANAGER
+Section: Kernel
+Requires: 
+Name: Session management
+SeeAlso: ???
+
+Feature: SHORTCUT
+Section: Kernel
+Requires: 
+Name: Keyboard accelerators and shortcuts
+SeeAlso: ???
+
+Feature: ACTION
+Section: Kernel
+Requires: 
+Name: QAction
+SeeAlso: ???
+
+Feature: CURSOR
+Section: Kernel
+Requires:
+Name: Cursors
+SeeAlso: ???
+
+Feature: CLIPBOARD
+Section: Kernel
+Requires: QWS_PROPERTIES
+Name: Cut and paste
+SeeAlso: ???
+
+Feature: WHEELEVENT
+Section: Kernel
+Requires:
+Name: Wheel-mouse events
+SeeAlso: ???
+
+Feature: SOUND
+Section: Kernel
+Requires:
+Name: Playing sounds
+SeeAlso: ???
+
+Feature: EFFECTS
+Section: Kernel
+Requires:
+Name: Special widget effects (fading, scrolling)
+SeeAlso: ???
+
+# Data structures
+
+Feature: STL
+Section: Data structures
+Requires:
+Name: Standard template library compatiblity
+SeeAlso: ???
+
+Feature: QUUID_STRING
+Section: Data structures
+Requires: 
+Name: Convert UUID to/from string
+SeeAlso: ???
+
+Feature: TEXTDATE
+Section: Data structures
+Requires: 
+Name: Month and day names in dates
+SeeAlso: ???
+
+Feature: DATESTRING
+Section: Data structures
+Requires: TEXTDATE
+Name: QDate/QTime/QDateTime toString() and fromString()
+SeeAlso: ???
+
+# File I/O
+
+Feature: PROCESS
+Section: File I/O
+Requires: THREAD
+Name: External process invocation.
+SeeAlso: ???
+
+Feature: TEXTSTREAM
+Section: File I/O
+Requires:
+Name: QTextStream
+SeeAlso: ???
+
+Feature: LIBRARY
+Section: File I/O
+Requires: SETTINGS
+Name: Shared library wrapper
+SeeAlso: ???
+
+Feature: SETTINGS
+Section: File I/O
+Requires: TEXTSTREAM 
+Name: Persistent application settings
+SeeAlso: ???
+
+Feature: DOM
+Section: File I/O
+Requires:
+Name: Document Object Model
+SeeAlso: ???
+
+# Widgets
+
+Feature: TREEWIDGET
+Section: Widgets
+Requires: TREEVIEW
+Name: QTreeWidget
+SeeAlso: ???
+
+Feature: LISTWIDGET
+Section: Widgets
+Requires: LISTVIEW
+Name: QListWidget
+SeeAlso: ???
+
+Feature: TABLEWIDGET
+Section: Widgets
+Requires: TABLEVIEW
+Name: QTableWidget
+SeeAlso: ???
+
+Feature: DATETIMEEDIT
+Section: Widgets
+Requires: SPINBOX DATESTRING
+Name: QDateTimeEdit
+SeeAlso: ???
+
+Feature: STACKEDWIDGET
+Section: Widgets
+Requires:
+Name: QStackedWidget
+SeeAlso: ???
+
+Feature: TEXTBROWSER
+Section: Widgets
+Requires: TEXTEDIT
+Name: QTextBrowser
+SeeAlso: ???
+
+Feature: SPLASHSCREEN
+Section: Widgets
+Requires: 
+Name: Splash screen widget
+SeeAlso: ???
+
+Feature: SPLITTER
+Section: Widgets
+Requires: RUBBERBAND
+Name: Splitters
+SeeAlso: ???
+
+Feature: LCDNUMBER
+Section: Widgets
+Requires:
+Name: QLCDNumber
+SeeAlso: ???
+
+Feature: MENU
+Section: Widgets
+Requires: ACTION
+Name: Popup-menus
+SeeAlso: ???
+
+Feature: LINEEDIT
+Section: Widgets
+Requires:
+Name: Single-line edits
+SeeAlso: ???
+
+Feature: SPINBOX
+Section: Widgets
+Requires: SPINWIDGET LINEEDIT VALIDATOR
+Name: Spin boxes
+SeeAlso: ???
+
+Feature: TABBAR
+Section: Widgets
+Requires: TOOLBUTTON
+Name: Tab-bars
+SeeAlso: ???
+
+Feature: TABWIDGET
+Section: Widgets
+Requires: TABBAR STACKEDWIDGET
+Name: Tab widgets
+SeeAlso: ???
+
+Feature: COMBOBOX
+Section: Widgets
+Requires: LINEEDIT STANDARDITEMMODEL LISTVIEW
+Name: QComboBox
+SeeAlso: ???
+
+Feature: TOOLBUTTON
+Section: Widgets
+Requires: ICON ACTION
+Name: Tool-buttons
+SeeAlso: ???
+
+Feature: TOOLBAR
+Section: Widgets
+Requires: MAINWINDOW
+Name: Toolbars
+SeeAlso: ???
+
+Feature: TOOLBOX
+Section: Widgets
+Requires: ICON TOOLTIP TOOLBUTTON SCROLLAREA
+Name: Tool box
+SeeAlso: ???
+
+Feature: GROUPBOX
+Section: Widgets
+Requires:
+Name: Group boxes
+SeeAlso: ???
+
+Feature: BUTTONGROUP
+Section: Widgets
+Requires: GROUPBOX 
+Name: Button groups
+SeeAlso: ???
+
+Feature: MAINWINDOW
+Section: Widgets
+Requires: MENU RESIZEHANDLER TOOLBUTTON
+Name: Main-windows
+SeeAlso: ???
+
+Feature: DOCKWIDGET
+Section: Widgets
+Requires: RUBBERBAND MAINWINDOW
+Name: Main-windows
+SeeAlso: ???
+
+Feature: WORKSPACE
+Section: Widgets
+Requires: SCROLLBAR RESIZEHANDLER MENU TOOLBUTTON MAINWINDOW TOOLBAR MENUBAR
+Name: QWorkSpace
+SeeAlso: ???
+
+Feature: RESIZEHANDLER
+Section: Widgets
+Requires:
+Name: Internal resize handler
+SeeAlso: ???
+
+Feature: STATUSBAR
+Section: Widgets
+Requires:
+Name: Status bars
+SeeAlso: ???
+
+Feature: MENUBAR
+Section: Widgets
+Requires: MENU TOOLBUTTON
+Name: Menu bars
+SeeAlso: ???
+
+Feature: PROGRESSBAR
+Section: Widgets
+Requires:
+Name: Progress bars
+SeeAlso: ???
+
+Feature: SLIDER
+Section: Widgets
+Requires:
+Name: Sliders
+SeeAlso: ???
+
+Feature: SCROLLBAR
+Section: Widgets
+Requires: SLIDER
+Name: Scroll bars
+SeeAlso: ???
+
+Feature: DIAL
+Section: Widgets
+Requires: SLIDER
+Name: Dials
+SeeAlso: ???
+
+Feature: SCROLLAREA
+Section: Widgets
+Requires: SCROLLBAR
+Name: QScrollArea
+SeeAlso: ???
+
+Feature: SPINWIDGET
+Section: Widgets
+Requires:
+Name: Spinbox control widget
+SeeAlso: ???
+
+Feature: TEXTEDIT
+Section: Widgets
+Requires: SCROLLAREA
+Name: Rich text edit
+SeeAlso: ???
+
+Feature: SYNTAXHIGHLIGHTER
+Section: Widgets
+Requires: TEXTEDIT
+Name: QSyntaxHighlighter
+SeeAlso: ???
+
+Feature: RUBBERBAND
+Section: Widgets
+Requires:
+Name: QRubberBand
+SeeAlso: ???
+
+Feature: TOOLTIP
+Section: Widgets
+Requires:
+Name: Tool tips
+SeeAlso: ???
+
+Feature: STATUSTIP
+Section: Widgets
+Requires:
+Name: QStatusTip
+SeeAlso: ???
+
+Feature: WHATSTHIS
+Section: Widgets
+Requires: TOOLBUTTON ACTION
+Name: "What's this" help
+SeeAlso: ???
+
+Feature: VALIDATOR
+Section: Widgets
+Requires:
+Name: Input validators
+SeeAlso: ???
+
+Feature: SIZEGRIP
+Section: Widgets
+Requires:
+Name: QSizeGrip
+SeeAlso: ???
+
+# Dialogs
+
+Feature: MESSAGEBOX
+Section: Dialogs
+Requires:
+Name: QMessageBox
+SeeAlso: ???
+
+Feature: COLORDIALOG
+Section: Dialogs
+Requires: LINEEDIT VALIDATOR SPINBOX
+Name: QColorDialog
+SeeAlso: ???
+
+Feature: FILEDIALOG
+Section: Dialogs
+Requires: DIRMODEL TREEVIEW MESSAGEBOX COMBOBOX TOOLBUTTON BUTTONGROUP 
+Name: QFileDialog
+SeeAlso: ???
+
+Feature: FONTDIALOG
+Section: Dialogs
+Requires: STRINGLISTMODEL COMBOBOX VALIDATOR GROUPBOX
+Name: QFontDialog
+SeeAlso: ???
+
+Feature: PRINTDIALOG
+Section: Dialogs
+Requires: PRINTER COMBOBOX BUTTONGROUP SPINBOX TREEVIEW
+Name: QPrintDialog
+SeeAlso: ???
+
+Feature: PROGRESSDIALOG
+Section: Dialogs
+Requires: PROGRESSBAR
+Name: QProgressDialog
+SeeAlso: ???
+
+Feature: INPUTDIALOG
+Section: Dialogs
+Requires: COMBOBOX SPINBOX STACKEDWIDGET
+Name: QInputDialog
+SeeAlso: ???
+
+Feature: TABDIALOG
+Section: Dialogs
+Requires: TABBAR
+Name: Q3TabDialog
+SeeAlso: ???
+
+Feature: ERRORMESSAGE
+Section: Dialogs
+Requires: TEXTEDIT
+Name: QErrorMessage
+SeeAlso: ???
+
+# ItemViews
+
+Feature: ITEMVIEWS
+Section: ItemViews
+Requires: RUBBERBAND SCROLLAREA
+Name: The Model/View Framework
+SeeAlso: ???
+
+Feature: DIRMODEL
+Section: ItemViews
+Requires: ITEMVIEWS
+Name: QDirModel
+SeeAlso: ???
+
+Feature: STANDARDITEMMODEL
+Section: ItemViews
+Requires: ITEMVIEWS
+Name: QStandardItemModel
+SeeAlso: ???
+
+Feature: PROXYMODEL
+Section: ItemViews
+Requires: ITEMVIEWS
+Name: QProxyModel
+SeeAlso: ???
+
+Feature: STRINGLISTMODEL
+Section: ItemViews
+Requires: ITEMVIEWS
+Name: QStringListModel
+SeeAlso: ???
+
+Feature: LISTVIEW
+Section: ItemViews
+Requires: ITEMVIEWS
+Name: QListView
+SeeAlso: ???
+
+Feature: TABLEVIEW
+Section: ItemViews
+Requires: ITEMVIEWS 
+Name: QTableView
+SeeAlso: ???
+
+Feature: TREEVIEW
+Section: ItemViews
+Requires: ITEMVIEWS
+Name: QTreeView
+SeeAlso: ???
+
+# Styles
+
+Feature: STYLE_WINDOWS
+Section: Styles
+Requires:
+Name: Windows style
+SeeAlso: ???
+
+Feature: STYLE_MOTIF
+Section: Styles
+Requires:
+Name: Motif style
+SeeAlso: ???
+
+Feature: STYLE_CDE
+Section: Styles
+Requires: STYLE_MOTIF
+Name: CDE style
+SeeAlso: ???
+
+Feature: STYLE_PLASTIQUE
+Section: Styles
+Requires: STYLE_WINDOWS IMAGEFORMAT_XPM
+Name: Plastique style
+SeeAlso: ???
+
+Feature: STYLE_WINDOWSXP
+Section: Styles
+Requires: STYLE_WINDOWS
+Name: WindowsXP style
+SeeAlso: ???
+
+# Images
+
+Feature: IMAGEFORMATPLUGIN
+Section: Images
+Requires: 
+Name: QImageFormatPlugin
+SeeAlso: ???
+
+Feature: SIGNALMAPPER
+Section: Widgets
+Requires:
+Name: QSignalMapper
+SeeAlso: ???
+
+Feature: ICON
+Section: Images
+Requires: IMAGE_HEURISTIC_MASK
+Name: QIcon
+SeeAlso: ???
+
+Feature: MOVIE
+Section: Images
+Requires:
+Name: Animated images
+SeeAlso: ???
+
+Feature: IMAGEFORMAT_BMP
+Section: Images
+Requires:
+Name: BMP image I/O
+SeeAlso: ???
+
+Feature: IMAGEFORMAT_PPM
+Section: Images
+Requires: 
+Name: PPM image I/O
+SeeAlso: ???
+
+Feature: IMAGEFORMAT_XBM
+Section: Images
+Requires: 
+Name: XBM image I/O
+SeeAlso: ???
+
+Feature: IMAGEFORMAT_XPM
+Section: Images
+Requires: TEXTSTREAM
+Name: XPM image I/O
+SeeAlso: ???
+
+Feature: IMAGEFORMAT_PNG
+Section: Images
+Requires: 
+Name: PNG image I/O
+SeeAlso: ???
+
+Feature: IMAGEFORMAT_JPEG
+Section: Images
+Requires: 
+Name: JPEG image I/O
+SeeAlso: ???
+
+Feature: IMAGE_HEURISTIC_MASK
+Section: Images
+Requires:
+Name: QImage::createHeuristicMask()
+SeeAlso: ???
+
+Feature: IMAGE_TEXT
+Section: Images
+Requires:
+Name: Image file text strings
+SeeAlso: ???
+
+# Painting
+
+Feature: DIRECTPAINTER
+Section: Painting
+Requires:
+Name: QDirectPainter
+SeeAlso: ???
+
+Feature: PICTURE
+Section: Painting
+Requires: 
+Name: QPicture
+SeeAlso: ???
+
+Feature: COLORNAMES
+Section: Painting
+Requires:
+Name: Named colors
+SeeAlso: ???
+
+Feature: PRINTER
+Section: Painting
+Requires: TEXTSTREAM FILEDIALOG
+Name: Printing
+SeeAlso: ???
+
+# Fonts
+
+Feature: FREETYPE
+Section: Fonts
+Requires:
+Name: Freetype font engine
+SeeAlso: ???
+
+Feature: QWS_QPF
+Section: Fonts
+Requires:
+Name: Pre-rendered fonts
+SeeAlso: ???
+
+# Internationalization
+
+Feature: TEXTCODECPLUGIN
+Section: Internationalization
+Requires: TEXTCODEC LIBRARY
+Name: QTextCodecPlugin
+SeeAlso: ???
+
+Feature: TRANSLATION
+Section: Internationalization
+Requires:
+Name: Translations via QObject::tr()
+SeeAlso: ???
+
+Feature: TRANSLATION_UTF8
+Section: Internationalization
+Requires: TRANSLATION TEXTCODEC
+Name: Translations via QObject::trUtf8()
+SeeAlso: ???
+
+Feature: TEXTCODEC
+Section: Internationalization
+Requires:
+Name: Character set conversions
+SeeAlso: ???
+
+Feature: CODECS
+Section: Internationalization
+Requires: TEXTCODEC
+Name: Non-Unicode text conversions
+SeeAlso: ???
+
+Feature: BIG_CODECS
+Section: Internationalization
+Requires: 
+Name: Big Codecs (eg. CJK)
+SeeAlso: ???
+
+Feature: QWS_INPUTMETHODS
+Section: Internationalization
+Requires: 
+Name: Input methods
+SeeAlso: ???
+
+# Networking
+
+Feature: URLINFO
+Section: Networking
+Requires: 
+Name: QUrlInfo
+SeeAlso: ???
+
+Feature: HOSTINFO
+Section: Networking
+Requires: TEXTSTREAM 
+Name: QHostInfo
+SeeAlso: ???
+
+Feature: FTP
+Section: Networking
+Requires: URLINFO TEXTDATE
+Name: FTP file access
+SeeAlso: ???
+
+Feature: HTTP
+Section: Networking
+Requires: HOSTINFO
+Name: HTTP file access
+SeeAlso: ???
+
+Feature: UDPSOCKET
+Section: Networking
+Requires: 
+Name: QUdpSocket
+SeeAlso: ???
+
+Feature: NETWORKPROXY
+Section: Networking
+Requires: 
+Name: QNetworkProxy
+SeeAlso: ???
+
+Feature: SOCKS5
+Section: Networking
+Requires: NETWORKPROXY
+Name: SOCKS v5 network proxy
+SeeAlso: ???
+
+Feature: COP
+Section: Networking
+Requires:
+Name: QCop IPC
+SeeAlso: ???
+
+# Qt/Embedded-specific
+
+Feature: QWS_SOUNDSERVER
+Section: Qt/Embedded-specific
+Requires: SOUND HOSTINFO QWS_MULTIPROCESS
+Name: Server to play sound
+SeeAlso: ???
+
+Feature: QWS_MULTIPROCESS
+Section: Qt/Embedded-specific
+Requires:
+Name: Multi-process architecture
+SeeAlso: ???
+
+Feature: QWS_KEYBOARD
+Section: Qt/Embedded-specific
+Requires:
+Name: Console keyboard
+SeeAlso: ???
+
+Feature: QWS_CURSOR
+Section: Qt/Embedded-specific
+Requires: CURSOR
+Name: Visible cursor
+SeeAlso: ???
+
+Feature: QWS_ALPHA_CURSOR
+Section: Qt/Embedded-specific
+Requires:
+Name: Alpha-blended cursor
+SeeAlso: ???
+
+Feature: QWS_MANAGER
+Section: Qt/Embedded-specific
+Requires: QWS_DECORATION_DEFAULT
+Name: Window Manager
+SeeAlso: ???
+
+Feature: QWS_DECORATION_DEFAULT
+Section: Qt/Embedded-specific
+Requires: 
+Name:
+SeeAlso: ???
+
+Feature: QWS_DECORATION_WINDOWS
+Section: Qt/Embedded-specific
+Requires: QWS_DECORATION_DEFAULT
+Name: The "Windows" style
+SeeAlso: ???
+
+Feature: QWS_DECORATION_STYLED
+Section: Qt/Embedded-specific
+Requires: QWS_DECORATION_DEFAULT
+Name:
+SeeAlso: ???
+
+Feature: QWS_MOUSE
+Section: Qt/Embedded-specific
+Requires:
+Name: Mouse
+SeeAlso: ???
+
+Feature: QWS_MOUSE_AUTO
+Section: Qt/Embedded-specific
+Requires:
+Name: Autodetecting mouse driver
+SeeAlso: ???
+
+Feature: QWS_MOUSE_MANUAL
+Section: Qt/Embedded-specific
+Requires:
+Name: Non-autodetecting mouse driver
+SeeAlso: ???
+
+Feature: QWS_PROPERTIES
+Section: Qt/Embedded-specific
+Requires:
+Name: Qt/Embedded window system properties.
+SeeAlso: ???
+
+Feature: SXV
+Section: Qt/Embedded-specific
+Requires: MULTIPROCESS
+Name: Secure Execution Environment (experimental)
+SeeAlso: ???
