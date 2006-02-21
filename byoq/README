@@ -1,12 +1,11 @@
 BYOQ (Bring Your Own Qt)
 ------------------------
-Version: 0.1-20050204
+Version: 0.1-20060220
 Author: Justin Karneges <justin@affinix.com>
-Date: February 4th, 2005
+Date: February 20th, 2006
 
-This is a bundle of Qt 4 (just the core, network, xml) intended for easy
-inclusion within an existing application distribution.  As Qt 4 is still
-in development, this package is based on a snapshot version.
+This is a bundle of Qt 4.1.0 (just the core, network, xml) intended for easy
+inclusion within an existing application distribution.
 
 It's basically the Qt distribution (sitting in the 'qt' subdirectory), with
 the following changes:
